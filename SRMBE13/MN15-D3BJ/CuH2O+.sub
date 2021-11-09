@@ -1,0 +1,16 @@
+#!/bin/bash -l
+#SBATCH -N 1
+#SBATCH --tasks-per-node=28
+#SBATCH --time=1:00:00
+#SBATCH --job-name="CuH2O+"
+#SBATCH --error="CuH2O+.e%j"
+#SBATCH --output="CuH2O+.o%j"
+#SBATCH --mem=120G
+
+
+source ${HOME}/.bashrc
+export MKL_THREADING_LAYER=""
+conda activate p4env
+
+
+psi4 -n 28 -i "CuH2O+.in" -o "CuH2O+.out"

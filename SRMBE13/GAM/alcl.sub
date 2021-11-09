@@ -1,0 +1,16 @@
+#!/bin/bash -l
+#SBATCH -N 1
+#SBATCH --tasks-per-node=28
+#SBATCH --time=1:00:00
+#SBATCH --job-name="alcl"
+#SBATCH --error="alcl.e%j"
+#SBATCH --output="alcl.o%j"
+#SBATCH --mem=120G
+
+
+source ${HOME}/.bashrc
+export MKL_THREADING_LAYER=""
+conda activate p4env
+
+
+psi4 -n 28 -i "alcl.in" -o "alcl.out"

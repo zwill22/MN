@@ -1,0 +1,657 @@
+
+                                 *****************
+                                 * O   R   C   A *
+                                 *****************
+
+           --- An Ab Initio, DFT and Semiempirical electronic structure package ---
+
+                  #######################################################
+                  #                        -***-                        #
+                  #          Department of theory and spectroscopy      #
+                  #               Directorship: Frank Neese             #
+                  #        Max Planck Institute fuer Kohlenforschung    #
+                  #                Kaiser Wilhelm Platz 1               #
+                  #                 D-45470 Muelheim/Ruhr               #
+                  #                      Germany                        #
+                  #                                                     #
+                  #                  All rights reserved                #
+                  #                        -***-                        #
+                  #######################################################
+
+
+                         Program Version 4.2.0 -  RELEASE  -
+
+
+ With contributions from (in alphabetic order):
+   Daniel Aravena         : Magnetic Suceptibility
+   Michael Atanasov       : Ab Initio Ligand Field Theory (pilot matlab implementation)
+   Alexander A. Auer      : GIAO ZORA, VPT2
+   Ute Becker             : Parallelization
+   Giovanni Bistoni       : ED, misc. LED, open-shell LED, HFLED
+   Martin Brehm           : Molecular dynamics
+   Dmytro Bykov           : SCF Hessian
+   Vijay G. Chilkuri      : MRCI spin determinant printing, contributions to CSF-ICE
+   Dipayan Datta          : RHF DLPNO-CCSD density
+   Achintya Kumar Dutta   : EOM-CC, STEOM-CC
+   Dmitry Ganyushin       : Spin-Orbit,Spin-Spin,Magnetic field MRCI
+   Miquel Garcia          : C-PCM Hessian, Gaussian charge scheme
+   Yang Guo               : DLPNO-NEVPT2, CIM, IAO-localization
+   Andreas Hansen         : Spin unrestricted coupled pair/coupled cluster methods
+   Benjamin Helmich-Paris : CASSCF linear response (MC-RPA)
+   Lee Huntington         : MR-EOM, pCC
+   Robert Izsak           : Overlap fitted RIJCOSX, COSX-SCS-MP3, EOM
+   Christian Kollmar      : KDIIS, OOCD, Brueckner-CCSD(T), CCSD density
+   Simone Kossmann        : Meta GGA functionals, TD-DFT gradient, OOMP2, MP2 Hessian
+   Martin Krupicka        : AUTO-CI
+   Lucas Lang             : DCDCAS
+   Dagmar Lenk            : GEPOL surface, SMD
+   Dimitrios Liakos       : Extrapolation schemes; Compound Job, initial MDCI parallelization
+   Dimitrios Manganas     : Further ROCIS development; embedding schemes
+   Dimitrios Pantazis     : SARC Basis sets
+   Taras Petrenko         : DFT Hessian,TD-DFT gradient, ASA, ECA, R-Raman, ABS, FL, XAS/XES, NRVS
+   Peter Pinski           : DLPNO-MP2, DLPNO-MP2 Gradient
+   Christoph Reimann      : Effective Core Potentials
+   Marius Retegan         : Local ZFS, SOC
+   Christoph Riplinger    : Optimizer, TS searches, QM/MM, DLPNO-CCSD(T), (RO)-DLPNO pert. Triples
+   Tobias Risthaus        : Range-separated hybrids, TD-DFT gradient, RPA, STAB
+   Michael Roemelt        : Original ROCIS implementation
+   Masaaki Saitow         : Open-shell DLPNO-CCSD energy and density
+   Barbara Sandhoefer     : DKH picture change effects
+   Avijit Sen             : IP-ROCIS
+   Kantharuban Sivalingam : CASSCF convergence, NEVPT2, FIC-MRCI
+   Bernardo de Souza      : ESD, SOC TD-DFT
+   Georgi Stoychev        : AutoAux, RI-MP2 NMR
+   Willem Van den Heuvel  : Paramagnetic NMR
+   Boris Wezisla          : Elementary symmetry handling
+   Frank Wennmohs         : Technical directorship
+
+
+ We gratefully acknowledge several colleagues who have allowed us to
+ interface, adapt or use parts of their codes:
+   Stefan Grimme, W. Hujo, H. Kruse,             : VdW corrections, initial TS optimization,
+                  C. Bannwarth                     DFT functionals, gCP, sTDA/sTD-DF
+   Ed Valeev, F. Pavosevic, A. Kumar             : LibInt (2-el integral package), F12 methods
+   Garnet Chan, S. Sharma, J. Yang, R. Olivares  : DMRG
+   Ulf Ekstrom                                   : XCFun DFT Library
+   Mihaly Kallay                                 : mrcc  (arbitrary order and MRCC methods)
+   Andreas Klamt, Michael Diedenhofen            : otool_cosmo (COSMO solvation model)
+   Jiri Pittner, Ondrej Demel                    : Mk-CCSD
+   Frank Weinhold                                : gennbo (NPA and NBO analysis)
+   Christopher J. Cramer and Donald G. Truhlar   : smd solvation model
+   Lars Goerigk                                  : TD-DFT with DH, B97 family of functionals
+   V. Asgeirsson, H. Jonsson                     : NEB implementation
+   FAccTs GmbH                                   : IRC, NEB, NEB-TS, Multilevel, MM, QM/MM, CI optimization
+   S Lehtola, MJT Oliveira, MAL Marques          : LibXC Library
+
+
+ Your calculation uses the libint2 library for the computation of 2-el integrals
+ For citations please refer to: http://libint.valeyev.net
+
+ Your ORCA version has been built with support for libXC version: 4.2.3
+ For citations please refer to: https://tddft.org/programs/libxc/
+
+ This ORCA versions uses:
+   CBLAS   interface :  Fast vector & matrix operations
+   LAPACKE interface :  Fast linear algebra routines
+   SCALAPACK package :  Parallel linear algebra routines
+
+
+Your calculation utilizes the DFT-NL dispersion correction.
+Cite in your paper:
+Vydrov, O. A.; Van Voorhis, T. J. Chem. Phys. 2010, 133, 244103
+Hujo, W.; Grimme, S. J. Chem. Theory Comput. 2011, 7, 3866 
+   
+
+----- Orbital basis set information -----
+Your calculation utilizes the basis: def2-TZVPPD
+   F. Weigend and R. Ahlrichs, Phys. Chem. Chem. Phys. 7, 3297 (2005).
+   D. Rappoport and F. Furche, J. Chem. Phys. 133 134105 (2010).
+
+----- AuxJK basis set information -----
+Your calculation utilizes the auxiliary basis: def2/JK
+   H-Ba, Hf-Rn: F. Weigend, J. Comput. Chem. 29, 167 (2008).
+
+================================================================================
+                                        WARNINGS
+                       Please study these warnings very carefully!
+================================================================================
+
+INFO   : Found keyword 'NumGrad' for Energy calculation
+  ===> : Setting RunTyp to EnGrad
+
+WARNING: Numerical Gradient with sloppy Convergence Criteria    
+         Your results may be not reliable!                      
+         Please choose at least TightSCF!                       
+
+WARNING: your system is open-shell and RHF/RKS was chosen
+  ===> : WILL SWITCH to UHF/UKS
+
+
+INFO   : the flag for use of LIBINT has been found!
+
+================================================================================
+                                       INPUT FILE
+================================================================================
+NAME = Li.in
+|  1> #
+|  2> # Li wB97M-V/Def2-TZVPPD
+|  3> #
+|  4> ! wb97m-v def2-tzvppd def2/jk grid4 nofinalgrid numgrad
+|  5> 
+|  6> *xyz 0 2
+|  7> Li         0.00000        0.00000        0.00000
+|  8> *
+|  9> 
+| 10> %maxcore 5000
+| 11> 
+| 12> %pal
+| 13> nprocs = 28
+| 14> end
+| 15> 
+| 16> 
+| 17>                          ****END OF INPUT****
+================================================================================
+
+                     *******************************
+                     * Energy+Gradient Calculation *
+                     *******************************
+
+---------------------------------
+CARTESIAN COORDINATES (ANGSTROEM)
+---------------------------------
+  Li     0.000000    0.000000    0.000000
+
+----------------------------
+CARTESIAN COORDINATES (A.U.)
+----------------------------
+  NO LB      ZA    FRAG     MASS         X           Y           Z
+   0 Li    3.0000    0     6.941    0.000000    0.000000    0.000000
+
+--------------------------------
+INTERNAL COORDINATES (ANGSTROEM)
+--------------------------------
+ Li     0   0   0     0.000000000000     0.00000000     0.00000000
+
+---------------------------
+INTERNAL COORDINATES (A.U.)
+---------------------------
+ Li     0   0   0     0.000000000000     0.00000000     0.00000000
+
+---------------------
+BASIS SET INFORMATION
+---------------------
+There are 1 groups of distinct atoms
+
+ Group   1 Type Li  : 11s4p1d contracted to 5s4p1d pattern {62111/1111/1}
+
+Atom   0Li   basis set group =>   1
+----------------------------------
+AUXILIARY/JK BASIS SET INFORMATION
+----------------------------------
+There are 1 groups of distinct atoms
+
+ Group   1 Type Li  : 10s7p4d2f contracted to 7s5p3d2f pattern {4111111/31111/211/11}
+
+Atom   0Li   basis set group =>   1
+
+
+           ************************************************************
+           *        Program running with 28 parallel MPI-processes    *
+           *              working on a common directory               *
+           ************************************************************
+------------------------------------------------------------------------------
+                           ORCA GTO INTEGRAL CALCULATION
+------------------------------------------------------------------------------
+
+                         BASIS SET STATISTICS AND STARTUP INFO
+
+ # of primitive gaussian shells          ...   16
+ # of primitive gaussian functions       ...   28
+ # of contracted shells                  ...   10
+ # of contracted basis functions         ...   22
+ Highest angular momentum                ...    2
+ Maximum contraction depth               ...    6
+ Integral package used                   ... LIBINT
+ Integral threshhold            Thresh   ...  1.000e-10
+ Primitive cut-off              TCut     ...  1.000e-11
+
+
+------------------------------ INTEGRAL EVALUATION ----------------------------
+
+
+ * One electron integrals 
+ Pre-screening matrix                    ... done
+ Shell pair data                         ... done (   0.000 sec)
+
+
+
+           ************************************************************
+           *        Program running with 28 parallel MPI-processes    *
+           *              working on a common directory               *
+           ************************************************************
+-------------------------------------------------------------------------------
+                                 ORCA SCF
+-------------------------------------------------------------------------------
+
+------------
+SCF SETTINGS
+------------
+Hamiltonian:
+ Density Functional     Method          .... DFT(GTOs)
+ Exchange Functional    Exchange        .... WB97M-V
+ Correlation Functional Correlation     .... WB97M-V
+ Gradients option       PostSCFGGA      .... off
+ Hybrid DFT is turned on
+   Fraction HF Exchange ScalHFX         ....  0.150000
+   Scaling of DF-GGA-X  ScalDFX         ....  0.000000
+   Scaling of DF-GGA-C  ScalDFC         ....  1.000000
+   Scaling of DF-LDA-C  ScalLDAC        ....  1.000000
+   Perturbative correction              ....  0.000000
+   Density functional embedding theory  .... OFF
+ Long-range corrected/Screened/Range-Separated Hybrid DFT is turned on
+   Amount of maximum screened exact exchange              ....  0.850000
+   Range separation parameter mu (erf(mu*r12)/r12)        ....  0.300000
+   NL short-range parameter             ....  6.000000
+   NL long-range parameter              ....  0.010000
+
+
+General Settings:
+ Integral files         IntName         .... Li
+ Hartree-Fock type      HFTyp           .... UHF
+ Total Charge           Charge          ....    0
+ Multiplicity           Mult            ....    2
+ Number of Electrons    NEL             ....    3
+ Basis Dimension        Dim             ....   22
+ Nuclear Repulsion      ENuc            ....      0.0000000000 Eh
+
+Convergence Acceleration:
+ DIIS                   CNVDIIS         .... on
+   Start iteration      DIISMaxIt       ....    12
+   Startup error        DIISStart       ....  0.200000
+   # of expansion vecs  DIISMaxEq       ....     5
+   Bias factor          DIISBfac        ....   1.050
+   Max. coefficient     DIISMaxC        ....  10.000
+ Newton-Raphson         CNVNR           .... off
+ SOSCF                  CNVSOSCF        .... off
+ Level Shifting         CNVShift        .... on
+   Level shift para.    LevelShift      ....    0.2500
+   Turn off err/grad.   ShiftErr        ....    0.0010
+ Zerner damping         CNVZerner       .... off
+ Static damping         CNVDamp         .... on
+   Fraction old density DampFac         ....    0.7000
+   Max. Damping (<1)    DampMax         ....    0.9800
+   Min. Damping (>=0)   DampMin         ....    0.0000
+   Turn off err/grad.   DampErr         ....    0.1000
+ Fernandez-Rico         CNVRico         .... off
+
+SCF Procedure:
+ Maximum # iterations   MaxIter         ....   125
+ SCF integral mode      SCFMode         .... Direct
+   Integral package                     .... LIBINT
+ Reset frequency        DirectResetFreq ....    20
+ Integral Threshold     Thresh          ....  1.000e-10 Eh
+ Primitive CutOff       TCut            ....  1.000e-11 Eh
+
+Convergence Tolerance:
+ Convergence Check Mode ConvCheckMode   .... Total+1el-Energy
+ Convergence forced     ConvForced      .... 0
+ Energy Change          TolE            ....  1.000e-06 Eh
+ 1-El. energy change                    ....  1.000e-03 Eh
+ DIIS Error             TolErr          ....  1.000e-06
+
+
+Diagonalization of the overlap matrix:
+Smallest eigenvalue                        ... 7.093e-02
+Time for diagonalization                   ...    0.001 sec
+Threshold for overlap eigenvalues          ... 1.000e-08
+Number of eigenvalues below threshold      ... 0
+Time for construction of square roots      ...    0.148 sec
+Total time needed                          ...    0.149 sec
+
+-------------------
+DFT GRID GENERATION
+-------------------
+
+General Integration Accuracy     IntAcc      ...  4.670
+Radial Grid Type                 RadialGrid  ... Gauss-Chebyshev
+Angular Grid (max. acc.)         AngularGrid ... Lebedev-302
+Angular grid pruning method      GridPruning ... 3 (G Style)
+Weight generation scheme         WeightScheme... Becke
+Basis function cutoff            BFCut       ...    1.0000e-10
+Integration weight cutoff        WCut        ...    1.0000e-14
+Grids for H and He will be reduced by one unit
+
+# of grid points (after initial pruning)     ...   5876 (   0.0 sec)
+# of grid points (after weights+screening)   ...   5876 (   0.0 sec)
+Grid point division into batches done        ...    0.0 sec
+Reduced shell lists constructed in    0.0 sec
+
+Total number of grid points                  ...     5876
+Total number of batches                      ...       92
+Average number of points per batch           ...       63
+Average number of grid points per atom       ...     5876
+Average number of shells per batch           ...     1.60 (16.00%)
+Average number of basis functions per batch  ...     3.20 (14.55%)
+Average number of large shells per batch     ...     0.80 (50.00%)
+Average number of large basis fcns per batch ...     2.40 (75.00%)
+Maximum spatial batch extension              ...  30.44, 30.44, 30.44 au
+Average spatial batch extension              ...   1.12,  1.12,  1.32 au
+
+Time for grid setup =    3.462 sec
+
+------------------------------
+INITIAL GUESS: MODEL POTENTIAL
+------------------------------
+Loading Hartree-Fock densities                     ... done
+Calculating cut-offs                               ... done
+Setting up the integral package                    ... done
+Initializing the effective Hamiltonian             ... done
+Starting the Coulomb interaction                   ... done (   0.0 sec)
+Reading the grid                                   ... done
+Mapping shells                                     ... done
+Starting the XC term evaluation                    ... done (   0.0 sec)
+  promolecular density results
+     # of electrons  =      2.999999676
+     EX              =     -1.740690383
+     EC              =     -0.057662715
+     EX+EC           =     -1.798353098
+Transforming the Hamiltonian                       ... done (   0.0 sec)
+Diagonalizing the Hamiltonian                      ... done (   0.0 sec)
+Back transforming the eigenvectors                 ... done (   0.0 sec)
+Now organizing SCF variables                       ... done
+                      ------------------
+                      INITIAL GUESS DONE (   3.8 sec)
+                      ------------------
+--------------
+SCF ITERATIONS
+--------------
+ITER       Energy         Delta-E        Max-DP      RMS-DP      [F,P]     Damp
+               ***  Starting incremental Fock matrix formation  ***
+  0     -7.4482051118   0.000000000000 0.55795631  0.03110176  0.0219318 0.7000
+  1     -6.7602301806   0.687974931108 0.16738689  0.00959880  0.1950496 0.7000
+                               ***Turning on DIIS***
+  2     -6.9814886175  -0.221258436865 0.39056941  0.02275758  0.0765073 0.0000
+  3     -7.4493622499  -0.467873632409 0.35701186  0.02937674  0.1577942 0.7000
+  4     -6.7726355266   0.676726723355 0.82850147  0.06843281  0.0481492 0.0000
+  5     -4.9862676523   1.786367874256 0.00411623  0.00035015  0.3383064 0.7000
+  6     -4.9880023880  -0.001734735674 0.00430465  0.00035860  0.3406309 0.7000
+  7     -4.9896474515  -0.001645063568 0.01024553  0.00087416  0.3428938 0.7000
+  8     -4.9954534111  -0.005805959537 0.35248555  0.02917083  0.3394159 0.7000
+  9     -5.7741641462  -0.778710735161 0.24673989  0.02040222  0.2448760 0.7000
+ 10     -6.3077567359  -0.533592589653 0.17271792  0.01433265  0.1868595 0.7000
+ 11     -6.6681778517  -0.360421115833 0.12090255  0.01015198  0.1527937 0.7000
+ 12     -6.9125427753  -0.244364923538 0.08463178  0.00740956  0.1388826 0.7000
+ 13     -7.0780739458  -0.165531170543 0.06597936  0.00573520  0.1449990 0.7000
+ 14     -7.1899556227  -0.111881676870 0.04146957  0.00352217  0.1598961 0.7000
+ 15     -7.2722767799  -0.082321157247 0.02902870  0.00269595  0.1082536 0.7000
+ 16     -7.3269544818  -0.054677701892 0.02504320  0.00202244  0.1041203 0.7000
+ 17     -7.3644336505  -0.037479168652 0.05343601  0.00460264  0.0980965 0.0000
+ 18     -7.4452212227  -0.080787572195 0.19971835  0.01504400  0.3874171 0.7000
+ 19     -6.7191344153   0.726086807399 0.13966488  0.01054080  0.2309275 0.7000
+               *** Restarting incremental Fock matrix formation ***
+                                   *** Resetting DIIS ***
+ 20     -6.1815375348   0.537596880515 0.10181497  0.00835705  0.3175304 0.7000
+ 21     -6.5838184493  -0.402280914515 0.07127048  0.00590704  0.1309359 0.7000
+ 22     -6.8559336432  -0.272115193903 0.16629778  0.01363504  0.0447836 0.0000
+ 23     -7.4508229271  -0.594889283908 0.12888877  0.00717622  0.1212410 0.7000
+ 24     -6.8027991624   0.648023764661 0.30075712  0.01649895  0.0781390 0.0000
+ 25     -5.1020710895   1.700728072899 0.00309547  0.00030546  0.3450925 0.7000
+ 26     -5.1034547697  -0.001383680185 0.00383003  0.00036707  0.3460334 0.7000
+ 27     -5.1049643374  -0.001509567683 0.00227867  0.00017664  0.3469226 0.7000
+ 28     -5.1057146601  -0.000750322676 0.12851346  0.00705062  0.3479732 0.7000
+ 29     -5.8452865228  -0.739571862725 0.08928918  0.00502132  0.2759310 0.7000
+ 30     -6.3495112993  -0.504224776557 0.05886804  0.00355089  0.2794803 0.7000
+ 31     -6.6964234942  -0.346912194890 0.03955820  0.00285113  0.2458933 0.7000
+ 32     -6.9322046280  -0.235781133752 0.04955625  0.00283615  0.2205199 0.7000
+ 33     -7.0918756514  -0.159671023380 0.07401917  0.00334649  0.2099931 0.7000
+ 34     -7.1985353395  -0.106659688123 0.08049725  0.00332272  0.2163943 0.7000
+ 35     -7.2708714027  -0.072336063187 0.02313211  0.00120390  0.2226541 0.7000
+ 36     -7.3261143836  -0.055242980965 0.00921227  0.00053636  0.1701825 0.7000
+ 37     -7.3643183614  -0.038203977730 0.01815354  0.00076668  0.1356494 0.7000
+ 38     -7.3912604864  -0.026942125062 0.02706736  0.00109340  0.1041246 0.7000
+ 39     -7.4101631395  -0.018902653097 0.09488040  0.00389439  0.0770285 0.0000
+               *** Restarting incremental Fock matrix formation ***
+                                   *** Resetting DIIS ***
+ 40     -7.4496093716  -0.039446232116 0.50798263  0.03057487  0.3984334 0.7000
+ 41     -6.7511102995   0.698499072097 0.35558418  0.02145227  0.1827549 0.7000
+ 42     -6.2283313818   0.522778917755 0.24890982  0.01500083  0.2432143 0.7000
+ 43     -5.8520315264   0.376299855382 0.17423761  0.01048685  0.2940286 0.7000
+ 44     -5.5818818433   0.270149683114 0.12196666  0.00735800  0.3365585 0.7000
+ 45     -5.3892560600   0.192625783335 0.42261842  0.02545716  0.3691312 0.7000
+ 46     -6.0364128902  -0.647156830221 0.29583567  0.01782480  0.3099830 0.7000
+ 47     -6.4843270602  -0.447914170010 0.20708589  0.01247774  0.2181071 0.7000
+ 48     -6.7874769108  -0.303149850566 0.14496072  0.00873300  0.1653010 0.7000
+ 49     -6.9950208100  -0.207543899286 0.10147058  0.00610885  0.1282530 0.7000
+ 50     -7.1376831914  -0.142662381336 0.07102608  0.00427017  0.1012406 0.7000
+ 51     -7.2359323486  -0.098249157229 0.16571427  0.00995457  0.0814302 0.0000
+ 52     -7.4486721894  -0.212739840759 1.14912025  0.09666565  0.0361337 0.0000
+ 53     -4.9235178232   2.525154366154 0.00360329  0.00017109  0.4430378 0.7000
+ 54     -4.9217032412   0.001814582041 0.00509497  0.00023909  0.4477280 0.7000
+ 55     -4.9194888665   0.002214374701 0.00514577  0.00023488  0.4516432 0.7000
+ 56     -4.9176970881   0.001791778381 0.00247152  0.00029602  0.4546541 0.7000
+ 57     -4.9147159854   0.002981102711 0.34446424  0.02949971  0.4545114 0.7000
+ 58     -5.7352555323  -0.820539546896 0.24112497  0.02081328  0.2050254 0.7000
+ 59     -6.2862023111  -0.550946778817 0.56262493  0.04842849  0.0559064 0.0000
+               *** Restarting incremental Fock matrix formation ***
+                                   *** Resetting DIIS ***
+ 60     -7.4390366157  -1.152834304591 0.24797677  0.02433606  0.2848904 0.7000
+ 61     -6.7773869137   0.661649701963 0.24797677  0.02436600  0.0219607 0.0000
+ 62     -7.4475467046  -0.670159790912 0.00281046  0.00011390  0.2009685 0.7000
+ 63     -7.4476321775  -0.000085472887 0.00318356  0.00012508  0.1982290 0.7000
+ 64     -7.4477281911  -0.000096013555 0.00250073  0.00009883  0.1956983 0.7000
+ 65     -7.4478329804  -0.000104789297 0.00626322  0.00025050  0.1933887 0.7000
+ 66     -7.4474927678   0.000340212587 0.27950452  0.02808062  0.1972818 0.7000
+ 67     -6.7855480621   0.661944705687 0.27950447  0.02805789  0.0391721 0.0000
+ 68     -7.4502608218  -0.664712759698 0.00828493  0.00031697  0.3047908 0.7000
+ 69     -7.4500586994   0.000202122358 0.52121358  0.03034380  0.2014587 0.7000
+ 70     -6.7764476610   0.673611038491 1.20461577  0.06978888  0.0382555 0.0000
+ 71     -5.0374137817   1.739033879257 0.51775192  0.03004027  0.3031621 0.7000
+ 72     -5.7935041541  -0.756090372449 0.36242683  0.02103519  0.2074370 0.7000
+ 73     -6.3174973406  -0.523993186435 0.32330974  0.01860906  0.1289365 0.7000
+ 74     -5.9458883965   0.371608944089 0.35068284  0.01926452  0.2010113 0.7000
+ 75     -6.4237254913  -0.477837094832 0.24547825  0.01349992  0.1192658 0.7000
+ 76     -6.7484593020  -0.324733810727 0.57278180  0.03146362  0.0466147 0.0000
+ 77     -7.4506940432  -0.702234741189 0.00418513  0.00019017  0.1381771 0.7000
+ 78     -7.4506057629   0.000088280344 0.00576497  0.00024856  0.1400872 0.7000
+ 79     -7.4505524806   0.000053282302 0.00605711  0.00023835  0.1416595 0.7000
+               *** Restarting incremental Fock matrix formation ***
+                                   *** Resetting DIIS ***
+ 80     -7.4504900690   0.000062411574 0.42258217  0.02469077  0.1433835 0.7000
+ 81     -6.8033143241   0.647175744882 0.42238551  0.02465598  0.0779813 0.0000
+ 82     -7.4513067162  -0.647992392033 0.25855229  0.01861950  0.1249158 0.7000
+ 83     -6.7720439312   0.679262785018 0.60062647  0.04348628  0.0662267 0.0000
+ 84     -5.0370458616   1.734998069590 0.00277690  0.00022665  0.3344742 0.7000
+ 85     -5.0379579806  -0.000912119068 0.02212612  0.00158858  0.3367133 0.7000
+ 86     -5.0339468940   0.004011086657 0.01152165  0.00087301  0.3397086 0.7000
+ 87     -5.0307354541   0.003211439852 0.26735642  0.01872555  0.3431850 0.7000
+ 88     -5.7826188239  -0.751883369771 0.18714735  0.01326622  0.2564986 0.7000
+ 89     -6.3014041593  -0.518785335427 0.13100435  0.00924787  0.1789279 0.7000
+ 90     -6.6609945943  -0.359590434991 0.09170381  0.00640898  0.1057082 0.7000
+ 91     -6.9082260255  -0.247231431146 0.21397635  0.01488160  0.0679271 0.0000
+ 92     -7.4505068303  -0.542280804878 0.55036783  0.03079836  0.1251722 0.7000
+ 93     -6.7742932621   0.676213568196 1.25335276  0.07083231  0.0640641 0.0000
+ 94     -5.0082856224   1.766007639733 0.00863931  0.00063807  0.3297583 0.7000
+ 95     -5.0100182927  -0.001732670266 0.04998162  0.00316549  0.3324472 0.7000
+ 96     -5.0455569008  -0.035538608112 0.02830945  0.00165306  0.3292073 0.7000
+ 97     -5.0615493161  -0.015992415274 0.52463969  0.02972768  0.3284197 0.7000
+ 98     -5.8209836980  -0.759434381964 0.36745916  0.02091461  0.2428759 0.7000
+ 99     -6.3414382412  -0.520454543151 0.25722657  0.01458710  0.1210056 0.7000
+               *** Restarting incremental Fock matrix formation ***
+                                   *** Resetting DIIS ***
+100     -6.6942769822  -0.352838741072 0.60018924  0.03412976  0.0525380 0.0000
+101     -7.4455576319  -0.751280649616 0.20795454  0.01768913  0.2282147 0.7000
+102     -6.7500573989   0.695500232939 0.48478269  0.04123718  0.0422232 0.0000
+103     -4.9844069595   1.765650439441 0.20782230  0.01765972  0.2970239 0.7000
+104     -5.7477184104  -0.763311450884 0.14547546  0.01236236  0.1922154 0.7000
+105     -6.2804655937  -0.532747183375 0.10183374  0.00865340  0.1026641 0.7000
+106     -6.6447373669  -0.364271773211 0.23761566  0.02021439  0.0468260 0.0000
+107     -7.4478699849  -0.803132617930 0.52600431  0.03168893  0.2091077 0.7000
+108     -6.7681088291   0.679761155786 1.22678956  0.07418332  0.0475261 0.0000
+109     -5.0043056591   1.763803170003 0.00405301  0.00033804  0.2966057 0.7000
+110     -5.0065494575  -0.002243798390 0.52578354  0.03172570  0.2984303 0.7000
+111     -5.7724751741  -0.765925716580 0.36804788  0.02221889  0.1973004 0.7000
+112     -6.3030701970  -0.530595022925 0.25763153  0.01556169  0.1089419 0.7000
+113     -6.6643276491  -0.361257452092 0.60114001  0.03630651  0.0549276 0.0000
+114     -7.4494744238  -0.785146774681 0.00135871  0.00006294  0.1635602 0.7000
+115     -7.4494920026  -0.000017578841 0.00397024  0.00020027  0.1632294 0.7000
+116     -7.4497952428  -0.000303240219 0.48108486  0.02995132  0.1588344 0.7000
+117     -6.7890301988   0.660765043983 1.11572256  0.06909700  0.0377200 0.0000
+118     -5.0467059858   1.742324213028 0.05351072  0.00466028  0.3169532 0.7000
+119     -5.0486330669  -0.001927081117 0.06272884  0.00529472  0.3216485 0.7000
+               *** Restarting incremental Fock matrix formation ***
+                                   *** Resetting DIIS ***
+120     -5.0505233265  -0.001890259625 0.51212929  0.03032100  0.3259069 0.7000
+121     -5.8183163340  -0.767793007405 0.35847579  0.02130675  0.1337582 0.7000
+122     -6.3378666831  -0.519550349141 0.83645514  0.04953350  0.0247037 0.0000
+123     -7.4329244851  -1.095057801970 0.00405714  0.00016638  0.3082149 0.7000
+124     -7.4333175299  -0.000393044799 0.00506509  0.00019648  0.3055661 0.7000
+
+               *****************************************************
+               *                      ERROR                        *
+               *        SCF NOT CONVERGED AFTER 125 CYCLES         *
+               *****************************************************
+
+
+Setting up the DFT-NL grid :
+
+General Integration Accuracy     IntAcc      ...  4.340
+Radial Grid Type                 RadialGrid  ... Gauss-Chebyshev
+Angular Grid (max. acc.)         AngularGrid ... Lebedev-110
+Angular grid pruning method      GridPruning ... 3 (G Style)
+Weight generation scheme         WeightScheme... Becke
+Basis function cutoff            BFCut       ...    1.0000e-10
+Integration weight cutoff        WCut        ...    1.0000e-14
+Grids for H and He will be reduced by one unit
+
+# of grid points (after initial pruning)     ...   1640 (   0.0 sec)
+# of grid points (after weights+screening)   ...   1640 (   0.0 sec)
+Grid point division into batches done        ...    0.0 sec
+Reduced shell lists constructed in    0.0 sec
+
+Total number of grid points                  ...     1640
+Total number of batches                      ...       26
+Average number of points per batch           ...       63
+Average number of grid points per atom       ...     1640
+Average number of shells per batch           ...     2.50 (25.00%)
+Average number of basis functions per batch  ...     6.50 (29.55%)
+Average number of large shells per batch     ...     2.50 (100.00%)
+Average number of large basis fcns per batch ...     6.50 (100.00%)
+Maximum spatial batch extension              ...  27.77, 51.31, 51.31 au
+Average spatial batch extension              ...   1.07,  1.97,  1.97 au
+
+Final grid set up in    0.3 sec
+
+-------------------------------------------------------------------------------
+                         DFT-NL dispersion correction                          
+-------------------------------------------------------------------------------
+
+SC Energy -7.433317530 
+NL    Energy 0.013465398 
+SC+NL Energy -7.419852132 
+NL done in    0.1 sec
+-------------------------------------------------------------------------------
+
+---------------
+SCF CONVERGENCE
+---------------
+
+  Last Energy change         ...   -3.9304e-04  Tolerance :   1.0000e-06
+  Last MAX-Density change    ...    1.3205e-03  Tolerance :   1.0000e-05
+  Last RMS-Density change    ...    5.8263e-05  Tolerance :   1.0000e-06
+  Last DIIS Error            ...    3.0557e-01  Tolerance :   1.0000e-06
+
+             **** DENSITY FILE WAS UPDATED (Li.scfp) ****
+             **** ENERGY FILE WAS UPDATED (Li.en.tmp) ****
+
+     --------------------------------------------------------------------
+                                      WARNING
+     The wavefunction IS NOT YET CONVERGED! It shows however signs of
+     convergence. Therefore the wavefunction will be stored and can be
+     used as input for another calculation. 
+     DO NOT USE THIS WAVEFUNCTION  FOR ANYHTING ELSE. It is NOT RELIABLE
+     --------------------------------------------------------------------
+
+-------
+TIMINGS
+-------
+
+Total SCF time: 0 days 0 hours 6 min 54 sec 
+
+Total time                  ....     414.417 sec
+Sum of individual times     ....     411.241 sec  ( 99.2%)
+
+Fock matrix formation       ....     401.851 sec  ( 97.0%)
+  XC integration            ....     375.627 sec  ( 93.5% of F)
+    Basis function eval.    ....       0.018 sec  (  0.0% of XC)
+    Density eval.           ....       0.096 sec  (  0.0% of XC)
+    XC-Functional eval.     ....       0.157 sec  (  0.0% of XC)
+    XC-Potential eval.      ....       0.028 sec  (  0.0% of XC)
+Diagonalization             ....       4.207 sec  (  1.0%)
+Density matrix formation    ....       0.056 sec  (  0.0%)
+Population analysis         ....       0.000 sec  (  0.0%)
+Initial guess               ....       0.311 sec  (  0.1%)
+Orbital Transformation      ....       0.000 sec  (  0.0%)
+Orbital Orthonormalization  ....       0.000 sec  (  0.0%)
+DIIS solution               ....       1.101 sec  (  0.3%)
+Grid generation             ....       3.714 sec  (  0.9%)
+
+-------------------------   --------------------
+FINAL SINGLE POINT ENERGY        -7.419852131904   (Wavefunction not fully converged!)
+-------------------------   --------------------
+
+
+----------------------------------------------------------------------------
+                           ORCA NUMERICAL GRADIENT
+                              (28-process run)
+----------------------------------------------------------------------------
+
+I state                        ... 1
+J state                        ... 0
+Number of atoms                ... 1
+Derivative's order of accuracy ... 2
+Central differences            ... used
+Number of displacements        ... 6
+Numerical increment            ... 5.000e-03 bohr
+Translation invariance         ... used
+
+The output will be reduced. Please look at the following files:
+SCF program output             ... >Li.lastscf
+Integral program output        ... >Li.lastint
+Gradient program output        ... >Li.lastgrad
+
+
+     Note:   There are more processes than displacements to do
+     ===>:   Reducing number of processes to   0
+
+
+------------------------------
+CARTESIAN GRADIENT (NUMERICAL)
+-------------------------------
+   1   Li  :    0.000000000    0.000000000    0.000000000
+
+Norm of the cartesian gradient     ...    0.000000000
+RMS gradient                       ...    0.000000000
+MAX gradient                       ...    0.000000000
+*** glibc detected *** /mnt/storage/software/apps/orca-4.2.0/orca_4_2_0_linux_x86-64_openmpi314/orca: free(): invalid next size (fast): 0x000000000cfbfbd0 ***
+======= Backtrace: =========
+[0xb0928aa]
+[0xb09567c]
+[0x76d903]
+[0x76fb95]
+[0x915b4f]
+[0x918f24]
+[0x487649]
+[0xb05c99e]
+[0x4870d9]
+======= Memory map: ========
+00400000-0bf42000 r-xp 00000000 00:2b 4876154                            /mnt/storage/software/apps/orca-4.2.0/orca_4_2_0_linux_x86-64_openmpi314/orca
+0c141000-0c203000 rw-p 0bb41000 00:2b 4876154                            /mnt/storage/software/apps/orca-4.2.0/orca_4_2_0_linux_x86-64_openmpi314/orca
+0c203000-0c77a000 rw-p 00000000 00:00 0 
+0cd7c000-0cfe3000 rw-p 00000000 00:00 0                                  [heap]
+2b62a2d2b000-2b62a352c000 rw-p 00000000 00:00 0 
+2b62a3d2b000-2b62a63ee000 rw-p 00000000 00:00 0 
+2b62a8000000-2b62a80b3000 rw-p 00000000 00:00 0 
+2b62a80b3000-2b62ac000000 ---p 00000000 00:00 0 
+7fffce44f000-7fffce550000 rw-p 00000000 00:00 0                          [stack]
+7fffce57c000-7fffce57e000 r-xp 00000000 00:00 0                          [vdso]
+ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0                  [vsyscall]

@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#SBATCH -N 1
+#SBATCH --tasks-per-node=28
+#SBATCH --time=1:00:00
+#SBATCH --job-name="CH2"
+#SBATCH --error="CH2.e%j"
+#SBATCH --output="CH2.o%j"
+#SBATCH --mem=120G
+
+
+source ${HOME}/.bashrc
+
+
+qcore -n 28 "CH2.in" &> "CH2.out"

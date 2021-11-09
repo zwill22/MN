@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#SBATCH -N 1
+#SBATCH --tasks-per-node=28
+#SBATCH --time=1:00:00
+#SBATCH --job-name="Co_atm"
+#SBATCH --error="Co_atm.e%j"
+#SBATCH --output="Co_atm.o%j"
+#SBATCH --mem=120G
+
+
+source ${HOME}/.bashrc
+
+
+qcore -n 28 "Co_atm.in" &> "Co_atm.out"

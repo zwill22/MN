@@ -1,0 +1,1405 @@
+
+                                 *****************
+                                 * O   R   C   A *
+                                 *****************
+
+           --- An Ab Initio, DFT and Semiempirical electronic structure package ---
+
+                  #######################################################
+                  #                        -***-                        #
+                  #          Department of theory and spectroscopy      #
+                  #               Directorship: Frank Neese             #
+                  #        Max Planck Institute fuer Kohlenforschung    #
+                  #                Kaiser Wilhelm Platz 1               #
+                  #                 D-45470 Muelheim/Ruhr               #
+                  #                      Germany                        #
+                  #                                                     #
+                  #                  All rights reserved                #
+                  #                        -***-                        #
+                  #######################################################
+
+
+                         Program Version 4.2.0 -  RELEASE  -
+
+
+ With contributions from (in alphabetic order):
+   Daniel Aravena         : Magnetic Suceptibility
+   Michael Atanasov       : Ab Initio Ligand Field Theory (pilot matlab implementation)
+   Alexander A. Auer      : GIAO ZORA, VPT2
+   Ute Becker             : Parallelization
+   Giovanni Bistoni       : ED, misc. LED, open-shell LED, HFLED
+   Martin Brehm           : Molecular dynamics
+   Dmytro Bykov           : SCF Hessian
+   Vijay G. Chilkuri      : MRCI spin determinant printing, contributions to CSF-ICE
+   Dipayan Datta          : RHF DLPNO-CCSD density
+   Achintya Kumar Dutta   : EOM-CC, STEOM-CC
+   Dmitry Ganyushin       : Spin-Orbit,Spin-Spin,Magnetic field MRCI
+   Miquel Garcia          : C-PCM Hessian, Gaussian charge scheme
+   Yang Guo               : DLPNO-NEVPT2, CIM, IAO-localization
+   Andreas Hansen         : Spin unrestricted coupled pair/coupled cluster methods
+   Benjamin Helmich-Paris : CASSCF linear response (MC-RPA)
+   Lee Huntington         : MR-EOM, pCC
+   Robert Izsak           : Overlap fitted RIJCOSX, COSX-SCS-MP3, EOM
+   Christian Kollmar      : KDIIS, OOCD, Brueckner-CCSD(T), CCSD density
+   Simone Kossmann        : Meta GGA functionals, TD-DFT gradient, OOMP2, MP2 Hessian
+   Martin Krupicka        : AUTO-CI
+   Lucas Lang             : DCDCAS
+   Dagmar Lenk            : GEPOL surface, SMD
+   Dimitrios Liakos       : Extrapolation schemes; Compound Job, initial MDCI parallelization
+   Dimitrios Manganas     : Further ROCIS development; embedding schemes
+   Dimitrios Pantazis     : SARC Basis sets
+   Taras Petrenko         : DFT Hessian,TD-DFT gradient, ASA, ECA, R-Raman, ABS, FL, XAS/XES, NRVS
+   Peter Pinski           : DLPNO-MP2, DLPNO-MP2 Gradient
+   Christoph Reimann      : Effective Core Potentials
+   Marius Retegan         : Local ZFS, SOC
+   Christoph Riplinger    : Optimizer, TS searches, QM/MM, DLPNO-CCSD(T), (RO)-DLPNO pert. Triples
+   Tobias Risthaus        : Range-separated hybrids, TD-DFT gradient, RPA, STAB
+   Michael Roemelt        : Original ROCIS implementation
+   Masaaki Saitow         : Open-shell DLPNO-CCSD energy and density
+   Barbara Sandhoefer     : DKH picture change effects
+   Avijit Sen             : IP-ROCIS
+   Kantharuban Sivalingam : CASSCF convergence, NEVPT2, FIC-MRCI
+   Bernardo de Souza      : ESD, SOC TD-DFT
+   Georgi Stoychev        : AutoAux, RI-MP2 NMR
+   Willem Van den Heuvel  : Paramagnetic NMR
+   Boris Wezisla          : Elementary symmetry handling
+   Frank Wennmohs         : Technical directorship
+
+
+ We gratefully acknowledge several colleagues who have allowed us to
+ interface, adapt or use parts of their codes:
+   Stefan Grimme, W. Hujo, H. Kruse,             : VdW corrections, initial TS optimization,
+                  C. Bannwarth                     DFT functionals, gCP, sTDA/sTD-DF
+   Ed Valeev, F. Pavosevic, A. Kumar             : LibInt (2-el integral package), F12 methods
+   Garnet Chan, S. Sharma, J. Yang, R. Olivares  : DMRG
+   Ulf Ekstrom                                   : XCFun DFT Library
+   Mihaly Kallay                                 : mrcc  (arbitrary order and MRCC methods)
+   Andreas Klamt, Michael Diedenhofen            : otool_cosmo (COSMO solvation model)
+   Jiri Pittner, Ondrej Demel                    : Mk-CCSD
+   Frank Weinhold                                : gennbo (NPA and NBO analysis)
+   Christopher J. Cramer and Donald G. Truhlar   : smd solvation model
+   Lars Goerigk                                  : TD-DFT with DH, B97 family of functionals
+   V. Asgeirsson, H. Jonsson                     : NEB implementation
+   FAccTs GmbH                                   : IRC, NEB, NEB-TS, Multilevel, MM, QM/MM, CI optimization
+   S Lehtola, MJT Oliveira, MAL Marques          : LibXC Library
+
+
+ Your calculation uses the libint2 library for the computation of 2-el integrals
+ For citations please refer to: http://libint.valeyev.net
+
+ Your ORCA version has been built with support for libXC version: 4.2.3
+ For citations please refer to: https://tddft.org/programs/libxc/
+
+ This ORCA versions uses:
+   CBLAS   interface :  Fast vector & matrix operations
+   LAPACKE interface :  Fast linear algebra routines
+   SCALAPACK package :  Parallel linear algebra routines
+
+
+----- Orbital basis set information -----
+Your calculation utilizes the basis: def2-SVP
+   F. Weigend and R. Ahlrichs, Phys. Chem. Chem. Phys. 7, 3297 (2005).
+
+----- AuxJ basis set information -----
+Your calculation utilizes the auxiliary basis: def2/J
+   F. Weigend, Phys. Chem. Chem. Phys. 8, 1057 (2006).
+
+================================================================================
+                                        WARNINGS
+                       Please study these warnings very carefully!
+================================================================================
+
+
+INFO   : the flag for use of LIBINT has been found!
+
+================================================================================
+                                       INPUT FILE
+================================================================================
+NAME = Zr2_atom40.inp
+|  1> # input to generate an atomic fitting density for Zr
+|  2> # this file is use internally by ORCA
+|  3> #
+|  4> # atomic ground state (S=3): 1s2 2s2 2p6 3s2 3p6 4s2 3d10 4p6 4d2 5s2 
+|  5> #
+|  6> ! RHF AllowRHF def2-SVP def2/J  NoMulliken NoLoewdin NoMayer NoPrintMOs 
+|  7> 
+|  8> %output print[p_atomdensfit] 2 end
+|  9> 
+| 10> %scf
+| 11>   guess hcore
+| 12>   maxiter 1000
+| 13>   maxdisk 500000
+| 14>   SCFMode Conventional
+| 15>   lshift 0.300000
+| 16>   hftyp rohf
+| 17>   rohf_case sahf
+| 18>   rohf_numop   3
+| 19>   rohf_norb[1] 5,1
+| 20>   rohf_nel[1]  2,2
+| 21> end
+| 22> 
+| 23> %basis
+| 24>   NewECP 40
+| 25>     N_core 28
+| 26>     lmax f
+| 27>     s 4
+| 28>       1       8.2000000000    150.2675911000  2
+| 29>       2       4.0897278000     18.9762165000  2
+| 30>       3       7.5400000000     21.0937760000  2
+| 31>       4       3.7700000000      3.0806943000  2
+| 32>     p 4
+| 33>       1       7.1100000000     99.6221237000  2
+| 34>       2       3.5967980000     14.1687333000  2
+| 35>       3       7.5400000000     21.0937760000  2
+| 36>       4       3.7700000000      3.0806943000  2
+| 37>     d 4
+| 38>       1       5.3500000000     35.0451235000  2
+| 39>       2       2.4918215000      6.1112595000  2
+| 40>       3       7.5400000000     21.0937760000  2
+| 41>       4       3.7700000000      3.0806943000  2
+| 42>     f 2
+| 43>       1       7.5400000000    -21.0937760000  2
+| 44>       2       3.7700000000     -3.0806943000  2
+| 45>   end
+| 46>   NewGTO 40
+| 47>     s 2 
+| 48>      1      11.0000000000     -1.2721918001
+| 49>      2       9.5000000000      2.2605685160
+| 50>     s 1 
+| 51>      1       3.6383667759      1.0000000000
+| 52>     s 1 
+| 53>      1       0.7682202670      1.0000000000
+| 54>     s 1 
+| 55>      1       0.3403682404      1.0000000000
+| 56>     s 1 
+| 57>      1       0.0752612981      1.0000000000
+| 58>     s 1 
+| 59>      1       0.0301314047      1.0000000000
+| 60>     p 4 
+| 61>      1       8.6066305543      0.0424669011
+| 62>      2       4.4400979958     -0.2226938137
+| 63>      3       1.1281026946      0.5167410683
+| 64>      4       0.5434607631      0.6022871253
+| 65>     p 1 
+| 66>      1       0.2502240605      1.0000000000
+| 67>     p 1 
+| 68>      1       0.0850000000      1.0000000000
+| 69>     p 1 
+| 70>      1       0.0290000000      1.0000000000
+| 71>     d 3 
+| 72>      1       4.5567957795     -0.0166279255
+| 73>      2       1.2904939797      0.3555819112
+| 74>      3       0.5164698722      0.7231156937
+| 75>     d 1 
+| 76>      1       0.1934979779      1.0000000000
+| 77>     d 1 
+| 78>      1       0.0673098100      1.0000000000
+| 79>   end
+| 80>   NewAuxGTO 40
+| 81>     S 1
+| 82>      1 1310.72 1.0
+| 83>     S 1
+| 84>      1  655.36 1.0
+| 85>     S 1
+| 86>      1  327.68 1.0
+| 87>     S 1
+| 88>      1  163.84 1.0
+| 89>     S 1
+| 90>      1   81.82 1.0
+| 91>     S 1
+| 92>      1   40.96 1.0
+| 93>     S 1
+| 94>      1   20.48 1.0
+| 95>     S 1
+| 96>      1   10.24 1.0
+| 97>     S 1
+| 98>      1    5.12 1.0
+| 99>     S 1
+|100>      1    2.56 1.0
+|101>     S 1
+|102>      1    1.28 1.0
+|103>     S 1
+|104>      1    0.64 1.0
+|105>     S 1
+|106>      1    0.32 1.0
+|107>     S 1
+|108>      1    0.16 1.0
+|109>     S 1
+|110>      1    0.08 1.0
+|111>     S 1
+|112>      1    0.04 1.0
+|113>     S 1
+|114>      1    0.02 1.0
+|115>     S 1
+|116>      1    0.01 1.0
+|117>   end
+|118> end
+|119> 
+|120> * xyz 0 3
+|121> 40  0.0 0.0 0.0
+|122> *
+|123> 
+|124> 
+|125>                          ****END OF INPUT****
+================================================================================
+
+                       ****************************
+                       * Single Point Calculation *
+                       ****************************
+
+---------------------------------
+CARTESIAN COORDINATES (ANGSTROEM)
+---------------------------------
+  Zr     0.000000    0.000000    0.000000
+
+----------------------------
+CARTESIAN COORDINATES (A.U.)
+----------------------------
+  NO LB      ZA    FRAG     MASS         X           Y           Z
+   0 Zr   12.0000*   0    91.220    0.000000    0.000000    0.000000
+* core charge reduced due to ECP
+
+--------------------------------
+INTERNAL COORDINATES (ANGSTROEM)
+--------------------------------
+ Zr     0   0   0     0.000000000000     0.00000000     0.00000000
+
+---------------------------
+INTERNAL COORDINATES (A.U.)
+---------------------------
+ Zr     0   0   0     0.000000000000     0.00000000     0.00000000
+
+---------------------
+BASIS SET INFORMATION
+---------------------
+There are 1 groups of distinct atoms
+
+ Group   1 Type Zr  : 7s7p5d contracted to 6s4p3d pattern {211111/4111/311}
+
+Atom   0Zr   basis set group =>   1
+---------------------------------
+AUXILIARY/J BASIS SET INFORMATION
+---------------------------------
+There are 1 groups of distinct atoms
+
+ Group   1 Type Zr  : 18s contracted to 18s pattern {111111111111111111}
+
+Atom   0Zr   basis set group =>   1
+-------------------------
+ECP PARAMETER INFORMATION
+-------------------------
+
+ Group 1, Type Zr ECP (replacing 28 core electrons, lmax=3)
+
+Atom   0Zr   ECP group =>   1
+
+------------------------------------------------------------------------------
+                           ORCA GTO INTEGRAL CALCULATION
+------------------------------------------------------------------------------
+
+                         BASIS SET STATISTICS AND STARTUP INFO
+
+ # of primitive gaussian shells          ...   19
+ # of primitive gaussian functions       ...   53
+ # of contracted shells                  ...   13
+ # of contracted basis functions         ...   33
+ Highest angular momentum                ...    2
+ Maximum contraction depth               ...    4
+ Integral package used                   ... LIBINT
+ Integral threshhold            Thresh   ...  1.000e-10
+ Primitive cut-off              TCut     ...  1.000e-11
+ Storage cut-off                TCutStore... -1.000e+00
+ Buffer length                           ... 1048576 integrals/buffer
+ Generate file with integrals 4 distinct ...false
+
+
+------------------------------ INTEGRAL EVALUATION ----------------------------
+
+
+ * One electron integrals 
+
+   ECP integrals                         ... done
+ Pre-screening matrix                    ... done
+ Shell pair data                         ... done (   0.000 sec)
+ Statistics run                          ... done
+ Maximum amount of storage needed        ...     1 MB
+ Maximum amount of storage dedicated     ... 500000 MB
+ Beginning two electron integral evaluation:
+ Starting repulsion integrals
+  <ss|ss>  ...          231 b.         0 skpd (  0.0%)     0.000 s. (  0.000 ms/b)
+  <ss|sp>  ...          504 b.         0 skpd (  0.0%)     0.000 s. (  0.000 ms/b)
+  <ss|sd>  ...          378 b.         0 skpd (  0.0%)     0.000 s. (  0.000 ms/b)
+  <ss|pp>  ...          210 b.         0 skpd (  0.0%)     0.000 s. (  0.001 ms/b)
+  <ss|pd>  ...          252 b.         0 skpd (  0.0%)     0.000 s. (  0.001 ms/b)
+  <ss|dd>  ...          126 b.         0 skpd (  0.0%)     0.000 s. (  0.001 ms/b)
+  <sp|sp>  ...          300 b.         0 skpd (  0.0%)     0.000 s. (  0.001 ms/b)
+  <sp|sd>  ...          432 b.         0 skpd (  0.0%)     0.000 s. (  0.001 ms/b)
+  <sp|pp>  ...          240 b.         0 skpd (  0.0%)     0.000 s. (  0.001 ms/b)
+  <sp|pd>  ...          288 b.         0 skpd (  0.0%)     0.001 s. (  0.002 ms/b)
+  <sp|dd>  ...          144 b.         0 skpd (  0.0%)     0.001 s. (  0.004 ms/b)
+  <sd|sd>  ...          171 b.         0 skpd (  0.0%)     0.000 s. (  0.002 ms/b)
+  <sd|pp>  ...          180 b.         0 skpd (  0.0%)     0.001 s. (  0.003 ms/b)
+  <sd|pd>  ...          216 b.         0 skpd (  0.0%)     0.001 s. (  0.005 ms/b)
+  <sd|dd>  ...          108 b.         0 skpd (  0.0%)     0.001 s. (  0.009 ms/b)
+  <pp|pp>  ...           55 b.         0 skpd (  0.0%)     0.000 s. (  0.006 ms/b)
+  <pp|pd>  ...          120 b.         0 skpd (  0.0%)     0.001 s. (  0.008 ms/b)
+  <pp|dd>  ...           60 b.         0 skpd (  0.0%)     0.001 s. (  0.016 ms/b)
+  <pd|pd>  ...           78 b.         0 skpd (  0.0%)     0.001 s. (  0.017 ms/b)
+  <pd|dd>  ...           72 b.         0 skpd (  0.0%)     0.002 s. (  0.031 ms/b)
+  <dd|dd>  ...           21 b.         0 skpd (  0.0%)     0.002 s. (  0.074 ms/b)
+
+
+                                      INTEGRAL STATISTICS
+
+Integral type statistics:
+ Number of integrals retained            ...     157641 
+ One   Center Integrals retained         ...     157641 (100.0%)
+ Two   Center Integrals retained         ...          0 (  0.0%)
+ Three Center Integrals retained         ...          0 (  0.0%)
+ Four  Center Integrals retained         ...          0 (  0.0%)
+
+Storage statistics:
+ Number of char integrals                ...          0 (  0.0%)
+ Number of short int integrals           ...          0 (  0.0%)
+ Number of double/float integrals        ...     157641 (100.0%)
+ Amount of memory used                   ...          1 MB
+ Amount of memory estimated              ...          1 MB ( 94.0%)
+
+Prescreening statistics:
+ Total number of shell quadruples        ...       4186 
+ Number of skipped shell quadruples      ...          0 (  0.0%)
+ # of negligible batches done            ...          0 (  0.0%)
+
+Timings:
+ Total evaluation time               ...     0.828 sec (   0.014 min)
+ One electron matrix time            ...     0.287 sec (   0.005 min) = 34.6%
+ Schwartz matrix evaluation time     ...     0.136 sec (   0.002 min) = 16.5%
+ Statistics run                      ...     0.002 sec (   0.000 min) =  0.3%
+ Repulsion integral time             ...     0.013 sec (   0.000 min) =  1.6%
+
+-------------------------------------------------------------------------------
+                                 ORCA SCF
+-------------------------------------------------------------------------------
+
+------------
+SCF SETTINGS
+------------
+Hamiltonian:
+ Ab initio Hamiltonian  Method          .... Hartree-Fock(GTOs)
+
+
+General Settings:
+ Integral files         IntName         .... Zr2_atom40
+ Hartree-Fock type      HFTyp           .... ROHF
+ Total Charge           Charge          ....    0
+ Multiplicity           Mult            ....    3
+ Number of Electrons    NEL             ....   12
+ Basis Dimension        Dim             ....   33
+ Nuclear Repulsion      ENuc            ....      0.0000000000 Eh
+
+Convergence Acceleration:
+ DIIS                   CNVDIIS         .... on
+   Start iteration      DIISMaxIt       ....    12
+   Startup error        DIISStart       ....  0.200000
+   # of expansion vecs  DIISMaxEq       ....     5
+   Bias factor          DIISBfac        ....   1.050
+   Max. coefficient     DIISMaxC        ....  10.000
+ Newton-Raphson         CNVNR           .... off
+ SOSCF                  CNVSOSCF        .... off
+ Level Shifting         CNVShift        .... on
+   Level shift para.    LevelShift      ....    0.3000
+   Turn off err/grad.   ShiftErr        ....    0.0010
+ Zerner damping         CNVZerner       .... off
+ Static damping         CNVDamp         .... on
+   Fraction old density DampFac         ....    0.7000
+   Max. Damping (<1)    DampMax         ....    0.9800
+   Min. Damping (>=0)   DampMin         ....    0.0000
+   Turn off err/grad.   DampErr         ....    0.1000
+ Fernandez-Rico         CNVRico         .... off
+
+SCF Procedure:
+ Maximum # iterations   MaxIter         ....  1000
+ SCF integral mode      SCFMode         .... Conventional
+ Integral Threshold     Thresh          ....  1.000e-10 Eh
+ Primitive CutOff       TCut            ....  1.000e-11 Eh
+ Integral Buffer length BufferLength    .... 1048576
+ Integral index format  IndFormat       ....     0
+ Integral value format  ValFormat       ....     0
+ Integral Storage       Thresh          ....  1.000e-10 Eh
+
+Convergence Tolerance:
+ Convergence Check Mode ConvCheckMode   .... Total+1el-Energy
+ Convergence forced     ConvForced      .... 0
+ Energy Change          TolE            ....  1.000e-06 Eh
+ 1-El. energy change                    ....  1.000e-03 Eh
+ DIIS Error             TolErr          ....  1.000e-06
+
+
+Diagonalization of the overlap matrix:
+Smallest eigenvalue                        ... 2.006e-02
+Time for diagonalization                   ...    0.001 sec
+Threshold for overlap eigenvalues          ... 1.000e-08
+Number of eigenvalues below threshold      ... 0
+Time for construction of square roots      ...    0.202 sec
+Total time needed                          ...    0.203 sec
+
+--------------------
+INITIAL GUESS: HCORE
+--------------------
+AVERAGE-CONFIGURATION (SAHF) CASE FOUND
+
+-------------------
+FINAL ROHF SETTINGS
+-------------------
+Number of operators             ... 3
+  operator   0:   4 orbitals   8 electrons n(mue)= 2.000
+  operator   1:   5 orbitals   2 electrons n(mue)= 0.400
+  operator   2:   1 orbitals   2 electrons n(mue)= 2.000
+Vector coupling coefficients a and b (Zerner convention):
+   1.000    1.000    1.000           1.000    1.000    1.000 
+   1.000    0.625    1.000           1.000    1.250    1.000 
+   1.000    1.000    1.000           1.000    1.000    1.000 
+
+                      -----------------
+                      INTIAL GUESS DONE 
+                      -----------------
+
+ InCore treatment chosen:
+   Memory dedicated               ...    1024 MB
+   Memory needed                  ...      1 MB
+   Number of tiny    integrals    ...       0
+   Number of small   integrals    ...       0
+   Number of regular integrals    ...  157641
+
+--------------
+SCF ITERATIONS
+--------------
+ITER       Energy         Delta-E        Max-DP      RMS-DP      [F,P]     Damp
+  0    -42.9843827042   0.000000000000 2.02171727  0.07729619  0.6869985 0.7000
+  1    -44.9351106659  -1.950727961658 1.41520159  0.05548913  0.3944644 0.7000
+                            ****Activating DIIS****
+  2    -45.1593040309  -0.224193365011 3.30213834  0.12867520  0.0927839 0.0000
+  3    -45.5464694204  -0.387165389553 0.04059168  0.00139324  0.2546780 0.7000
+  4    -45.4268519081   0.119617512366 0.03251415  0.00107675  0.2364759 0.7000
+  5    -45.3989518251   0.027900082984 0.02388856  0.00101316  0.2290244 0.7000
+  6    -45.3725891343   0.026362690762 0.02928324  0.00102758  0.2245424 0.7000
+  7    -45.3390503423   0.033538792049 1.39821426  0.05906938  0.2089346 0.7000
+  8    -45.3980688117  -0.059018469391 3.28940294  0.10886246  0.0487552 0.0000
+  9    -46.1437273029  -0.745658491253 0.00367716  0.00015685  0.1130464 0.7000
+ 10    -46.1516860025  -0.007958699555 0.00319058  0.00014676  0.1016176 0.7000
+ 11    -46.1548322387  -0.003146236209 0.00952026  0.00043866  0.0987357 0.0000
+ 12    -46.1608760095  -0.006043770772 0.02004124  0.00089259  0.0970384 0.0000
+ 13    -46.1762885840  -0.015412574516 0.81836708  0.03035248  0.0821813 0.0000
+ 14    -45.7909027309   0.385385853119 0.03457231  0.00129246  0.1090092 0.7000
+ 15    -45.8264806441  -0.035577913205 0.13039692  0.00476274  0.0971913 0.0000
+ 16    -45.8664788919  -0.039998247823 0.02299984  0.00077591  0.0978835 0.0000
+ 17    -45.8750831677  -0.008604275777 0.01945032  0.00065438  0.0957212 0.0000
+ 18    -45.8822657503  -0.007182582613 0.29999100  0.00963381  0.0937567 0.0000
+ 19    -45.9728563718  -0.090590621486 0.12200760  0.00495351  0.0488848 0.0000
+ 20    -45.9997363921  -0.026880020325 0.10818667  0.00462010  0.0218140 0.0000
+ 21    -46.0140531786  -0.014316786487 0.07082953  0.00243344  0.0158763 0.0000
+ 22    -46.0200481401  -0.005994961533 0.08585578  0.00272526  0.0147555 0.0000
+ 23    -46.0266402488  -0.006592108717 0.15805759  0.00513624  0.0135622 0.0000
+ 24    -46.0373989657  -0.010758716854 0.16130096  0.00578167  0.0111106 0.0000
+ 25    -46.0459455124  -0.008546546677 0.06765875  0.00245620  0.0079357 0.0000
+ 26    -46.0483971877  -0.002451675316 0.03750327  0.00126399  0.0064483 0.0000
+ 27    -46.0495244416  -0.001127253904 0.05386201  0.00175953  0.0056225 0.0000
+ 28    -46.0508575202  -0.001333078597 0.07063014  0.00222730  0.0055375 0.0000
+ 29    -46.0520823742  -0.001224854021 0.03601784  0.00110366  0.0058303 0.0000
+ 30    -46.0524994582  -0.000417084029 0.00574505  0.00017552  0.0059754 0.0000
+ 31    -46.0525559074  -0.000056449163 0.00195108  0.00004367  0.0060022 0.0000
+ 32    -46.0525582195  -0.000002312141 0.00154945  0.00003604  0.0060057 0.0000
+ 33    -46.0525626851  -0.000004465548 0.00338692  0.00010383  0.0060089 0.0000
+ 34    -46.0525943764  -0.000031691331 0.00502551  0.00015247  0.0060227 0.0000
+ 35    -46.0526389430  -0.000044566585 0.00481591  0.00014602  0.0060422 0.0000
+ 36    -46.0526793840  -0.000040440950 0.00434247  0.00013156  0.0060601 0.0000
+ 37    -46.0527139648  -0.000034580808 0.00385800  0.00011683  0.0060757 0.0000
+ 38    -46.0527432127  -0.000029247951 0.00359513  0.00010881  0.0060892 0.0000
+ 39    -46.0527692321  -0.000026019361 0.00344977  0.00010434  0.0061017 0.0000
+ 40    -46.0527930878  -0.000023855713 0.00327981  0.00009914  0.0061135 0.0000
+ 41    -46.0528147680  -0.000021680183 0.00309587  0.00009352  0.0061246 0.0000
+ 42    -46.0528343454  -0.000019577480 0.00291834  0.00008812  0.0061351 0.0000
+ 43    -46.0528520182  -0.000017672712 0.00276583  0.00008347  0.0061448 0.0000
+ 44    -46.0528680723  -0.000016054156 0.00263729  0.00007956  0.0061540 0.0000
+ 45    -46.0528827551  -0.000014682761 0.00252201  0.00007605  0.0061628 0.0000
+ 46    -46.0528962290  -0.000013473890 0.00241451  0.00007278  0.0061711 0.0000
+ 47    -46.0529086124  -0.000012383435 0.00231354  0.00006971  0.0061791 0.0000
+ 48    -46.0529200071  -0.000011394736 0.00221959  0.00006686  0.0061867 0.0000
+ 49    -46.0529305086  -0.000010501477 0.00213255  0.00006422  0.0061940 0.0000
+ 50    -46.0529402033  -0.000009694722 0.00205139  0.00006176  0.0062010 0.0000
+ 51    -46.0529491658  -0.000008962429 0.00197505  0.00005944  0.0062077 0.0000
+ 52    -46.0529574597  -0.000008293945 0.00190283  0.00005725  0.0062141 0.0000
+ 53    -46.0529651411  -0.000007681360 0.00183434  0.00005518  0.0062203 0.0000
+ 54    -46.0529722599  -0.000007118838 0.00176929  0.00005321  0.0062262 0.0000
+ 55    -46.0529788614  -0.000006601478 0.00170735  0.00005134  0.0062320 0.0000
+ 56    -46.0529849862  -0.000006124802 0.00164822  0.00004955  0.0062375 0.0000
+ 57    -46.0529906710  -0.000005684791 0.00159164  0.00004784  0.0062428 0.0000
+ 58    -46.0529959489  -0.000005277963 0.00153739  0.00004620  0.0062480 0.0000
+ 59    -46.0530008503  -0.000004901323 0.00148529  0.00004463  0.0062529 0.0000
+ 60    -46.0530054025  -0.000004552262 0.00143518  0.00004312  0.0062577 0.0000
+ 61    -46.0530096310  -0.000004228460 0.00138693  0.00004166  0.0062623 0.0000
+ 62    -46.0530135588  -0.000003927843 0.00134041  0.00004026  0.0062668 0.0000
+ 63    -46.0530172074  -0.000003648552 0.00129551  0.00003890  0.0062711 0.0000
+ 64    -46.0530205963  -0.000003388921 0.00125212  0.00003760  0.0062752 0.0000
+ 65    -46.0530237438  -0.000003147449 0.00121018  0.00003633  0.0062792 0.0000
+ 66    -46.0530266665  -0.000002922779 0.00116958  0.00003511  0.0062831 0.0000
+ 67    -46.0530293802  -0.000002713680 0.00113028  0.00003393  0.0062868 0.0000
+ 68    -46.0530318992  -0.000002519030 0.00109219  0.00003278  0.0062904 0.0000
+ 69    -46.0530342370  -0.000002337806 0.00105527  0.00003167  0.0062939 0.0000
+ 70    -46.0530364061  -0.000002169076 0.00101946  0.00003059  0.0062973 0.0000
+ 71    -46.0530384181  -0.000002011992 0.00098471  0.00002955  0.0063005 0.0000
+ 72    -46.0530402839  -0.000001865790 0.00095095  0.00002853  0.0063036 0.0000
+ 73    -46.0530420137  -0.000001729801 0.00091812  0.00002755  0.0063066 0.0000
+ 74    -46.0530436172  -0.000001603467 0.00088613  0.00002659  0.0063096 0.0000
+ 75    -46.0530451036  -0.000001486397 0.00085485  0.00002566  0.0063124 0.0000
+ 76    -46.0530464820  -0.000001378464 0.00082407  0.00002476  0.0063151 0.0000
+ 77    -46.0530477620  -0.000001280006 0.00079345  0.00002388  0.0063177 0.0000
+ 78    -46.0530489542  -0.000001192196 0.00076239  0.00002302  0.0063202 0.0000
+ 79    -46.0530500720  -0.000001117744 0.00072982  0.00002219  0.0063226 0.0000
+ 80    -46.0530511341  -0.000001062127 0.00069398  0.00002140  0.0063248 0.0000
+ 81    -46.0530521697  -0.000001035573 0.00065199  0.00002066  0.0063270 0.0000
+ 82    -46.0530532252  -0.000001055569 0.00059988  0.00002001  0.0063290 0.0000
+ 83    -46.0530543731  -0.000001147848 0.00053379  0.00001947  0.0063309 0.0000
+ 84    -46.0530557126  -0.000001339497 0.00045421  0.00001899  0.0063325 0.0000
+ 85    -46.0530573483  -0.000001635742 0.00037227  0.00001845  0.0063338 0.0000
+ 86    -46.0530593432  -0.000001994821 0.00030821  0.00001787  0.0063348 0.0000
+ 87    -46.0530617065  -0.000002363320 0.00027321  0.00001766  0.0063356 0.0000
+ 88    -46.0530644733  -0.000002766836 0.00025542  0.00001801  0.0063362 0.0000
+ 89    -46.0530677521  -0.000003278748 0.00023503  0.00001848  0.0063367 0.0000
+ 90    -46.0530716244  -0.000003872362 0.00022524  0.00001857  0.0063370 0.0000
+ 91    -46.0530760546  -0.000004430220 0.00022664  0.00001845  0.0063373 0.0000
+ 92    -46.0530810005  -0.000004945844 0.00023079  0.00001866  0.0063374 0.0000
+ 93    -46.0530865519  -0.000005551387 0.00023710  0.00001908  0.0063374 0.0000
+ 94    -46.0530928002  -0.000006248281 0.00024076  0.00001927  0.0063373 0.0000
+ 95    -46.0530997098  -0.000006909646 0.00024245  0.00001932  0.0063371 0.0000
+ 96    -46.0531072453  -0.000007535493 0.00024585  0.00001953  0.0063369 0.0000
+ 97    -46.0531154832  -0.000008237878 0.00025056  0.00001987  0.0063365 0.0000
+ 98    -46.0531245008  -0.000009017631 0.00025355  0.00002007  0.0063360 0.0000
+ 99    -46.0531342653  -0.000009764513 0.00025621  0.00002024  0.0063355 0.0000
+100    -46.0531447864  -0.000010521049 0.00025927  0.00002046  0.0063348 0.0000
+101    -46.0531561051  -0.000011318691 0.00026419  0.00002083  0.0063340 0.0000
+102    -46.0531683360  -0.000012230920 0.00026547  0.00002091  0.0063332 0.0000
+103    -46.0531813357  -0.000012999706 0.00027323  0.00002151  0.0063323 0.0000
+104    -46.0531954591  -0.000014123411 0.00026558  0.00002089  0.0063312 0.0000
+105    -46.0532099113  -0.000014452186 0.00030004  0.00002359  0.0063301 0.0000
+106    -46.0532271019  -0.000017190593 0.00021758  0.00001712  0.0063287 0.0000
+107    -46.0532401323  -0.000013030446 0.00047528  0.00003733  0.0063277 0.0000
+108    -46.0532703056  -0.000030173266 0.00032686  0.00002568  0.0063251 0.0000
+109    -46.0532492399   0.000021065708 0.00112309  0.00008818  0.0063273 0.0000
+110    -46.0533259174  -0.000076677482 0.00161524  0.00012671  0.0063205 0.0000
+111    -46.0532196810   0.000106236382 0.00018122  0.00001486  0.0063305 0.0000
+112    -46.0532093116   0.000010369368 0.00063765  0.00005062  0.0063321 0.0000
+113    -46.0531756652   0.000033646369 0.00133739  0.00010590  0.0063362 0.0000
+114    -46.0531189047   0.000056760495 0.00142328  0.00011380  0.0063432 0.0000
+115    -46.0530790874   0.000039817382 0.00065845  0.00002371  0.0063490 0.0000
+116    -46.0530775463   0.000001541090 0.00052095  0.00004521  0.0063502 0.0000
+117    -46.0530693848   0.000008161439 0.00030974  0.00001842  0.0063523 0.0000
+118    -46.0530682964   0.000001088458 0.00037965  0.00002884  0.0063530 0.0000
+119    -46.0530734207  -0.000005124342 0.00077633  0.00006533  0.0063524 0.0000
+120    -46.0530877214  -0.000014300671 0.00046212  0.00002610  0.0063492 0.0000
+121    -46.0530845888   0.000003132548 0.00008596  0.00000684  0.0063506 0.0000
+122    -46.0530860738  -0.000001484940 0.00031077  0.00002303  0.0063505 0.0000
+123    -46.0530929122  -0.000006838382 0.00053599  0.00004039  0.0063495 0.0000
+124    -46.0531063488  -0.000013436675 0.00023819  0.00001820  0.0063477 0.0000
+125    -46.0531119673  -0.000005618452 0.00018637  0.00001216  0.0063468 0.0000
+                 **** Energy Check signals convergence ****
+
+               *****************************************************
+               *                     SUCCESS                       *
+               *           SCF CONVERGED AFTER 126 CYCLES          *
+               *****************************************************
+
+
+----------------
+TOTAL SCF ENERGY
+----------------
+
+Total Energy       :          -46.05311239 Eh           -1253.16890 eV
+
+Components:
+Nuclear Repulsion  :            0.00000000 Eh               0.00000 eV
+Electronic Energy  :          -46.05311239 Eh           -1253.16890 eV
+One Electron Energy:          -74.89676768 Eh           -2038.04466 eV
+Two Electron Energy:           28.84365529 Eh             784.87576 eV
+
+Virial components:
+Potential Energy   :          -60.51565385 Eh           -1646.71466 eV
+Kinetic Energy     :           14.46254146 Eh             393.54576 eV
+Virial Ratio       :            4.18430288
+
+
+---------------
+SCF CONVERGENCE
+---------------
+
+  Last Energy change         ...   -4.2759e-07  Tolerance :   1.0000e-06
+  Last MAX-Density change    ...    5.1530e-04  Tolerance :   1.0000e-05
+  Last RMS-Density change    ...    3.8026e-05  Tolerance :   1.0000e-06
+  Last DIIS Error            ...    6.3469e-03  Tolerance :   1.0000e-06
+
+             **** THE GBW FILE WAS UPDATED (Zr2_atom40.gbw) ****
+             **** DENSITY FILE WAS UPDATED (Zr2_atom40.scfp) ****
+             **** ENERGY FILE WAS UPDATED (Zr2_atom40.en.tmp) ****
+             **** THE GBW FILE WAS UPDATED (Zr2_atom40.gbw) ****
+             **** DENSITY FILE WAS UPDATED (Zr2_atom40.scfp) ****
+----------------
+ORBITAL ENERGIES
+----------------
+
+  NO   OCC          E(Eh)            E(eV) 
+   0   2.0000      -2.806080       -76.3573 
+   1   2.0000      -1.768454       -48.1221 
+   2   2.0000      -1.768451       -48.1220 
+   3   2.0000      -1.757723       -47.8301 
+   4   0.4000      -0.460925       -12.5424 
+   5   0.4000      -0.441661       -12.0182 
+   6   0.4000      -0.398215       -10.8360 
+   7   0.4000      -0.223115        -6.0713 
+   8   0.4000      -0.223110        -6.0711 
+   9   2.0000      -0.154727        -4.2103 
+  10   0.0000      -0.093598        -2.5469 
+  11   0.0000      -0.082189        -2.2365 
+  12   0.0000      -0.082184        -2.2363 
+  13   0.0000       0.090066         2.4508 
+  14   0.0000       0.124348         3.3837 
+  15   0.0000       0.124356         3.3839 
+  16   0.0000       0.142639         3.8814 
+  17   0.0000       0.171473         4.6660 
+  18   0.0000       0.178665         4.8617 
+  19   0.0000       0.183184         4.9847 
+  20   0.0000       0.188129         5.1192 
+  21   0.0000       0.188131         5.1193 
+  22   0.0000       0.847003        23.0481 
+  23   0.0000       0.853663        23.2293 
+  24   0.0000       0.866010        23.5653 
+  25   0.0000       0.867761        23.6130 
+  26   0.0000       0.867766        23.6131 
+  27   0.0000       0.978022        26.6133 
+  28   0.0000       0.978028        26.6135 
+  29   0.0000       0.998010        27.1572 
+  30   0.0000       1.116430        30.3796 
+  31   0.0000      19.806927       538.9739 
+  32   0.0000      72.305214      1967.5249 
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The d-vectors have cracked symmetry at i=5
+CleanUpVectors: The d-vectors have cracked symmetry at i=6
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The d-vectors have cracked symmetry at i=10
+CleanUpVectors: The d-vectors have cracked symmetry at i=11
+CleanUpVectors: The d-vectors have cracked symmetry at i=12
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The d-vectors have cracked symmetry at i=17
+CleanUpVectors: The d-vectors have cracked symmetry at i=18
+CleanUpVectors: The d-vectors have cracked symmetry at i=19
+CleanUpVectors: The d-vectors have cracked symmetry at i=20
+CleanUpVectors: The d-vectors have cracked symmetry at i=21
+CleanUpVectors: The d-vectors have cracked symmetry at i=22
+CleanUpVectors: The d-vectors have cracked symmetry at i=23
+CleanUpVectors: The d-vectors have cracked symmetry at i=24
+CleanUpVectors: The d-vectors have cracked symmetry at i=25
+CleanUpVectors: The d-vectors have cracked symmetry at i=26
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The p-vectors have cracked symmetry
+CleanUpVectors: The p-vectors have cracked symmetry
+--------------------------
+ATOM BASIS FOR ELEMENT Zr
+--------------------------
+ NewGTO Zr
+ S 7
+    1         11.000000000000        -0.212498873349
+    2          9.500000000000         0.377591069790
+    3          3.638366775900        -0.626134695703
+    4          0.768220267000         0.901679683233
+    5          0.340368240400         0.374935515345
+    6          0.075261298100        -0.002382934900
+    7          0.030131404700         0.002554383486
+ P 19
+    1         11.000000000000         0.000000108079
+    2          9.500000000000        -0.000000206652
+    3          3.638366775900         0.000000580389
+    4          0.768220267000        -0.000002935781
+    5          0.340368240400         0.000002124398
+    6          0.075261298100        -0.000002413990
+    7          8.606630554300        -0.028191993203
+    8          4.440097995800         0.147837075925
+    9          1.128102694600        -0.343042706391
+   10          0.543460763100        -0.399833143061
+   11          8.606630554300        -0.023612898064
+   12          4.440097995800         0.123824583056
+   13          1.128102694600        -0.287323865298
+   14          0.543460763100        -0.334890093852
+   15          8.606630554300        -0.006927279539
+   16          4.440097995800         0.036326227230
+   17          1.128102694600        -0.084291759857
+   18          0.543460763100        -0.098246191071
+   19          0.250224060500        -0.114269253282
+ S 7
+    1         11.000000000000        -0.086082448615
+    2          9.500000000000         0.152960640923
+    3          3.638366775900        -0.268895886943
+    4          0.768220267000         0.586252022681
+    5          0.340368240400         0.203992239383
+    6          0.075261298100        -1.110047906610
+    7          0.030131404700        -0.072696948041
+ P 19
+    1         11.000000000000         0.000005319721
+    2          9.500000000000        -0.000010171582
+    3          3.638366775900         0.000028900996
+    4          0.768220267000        -0.000139378466
+    5          0.340368240400        -0.000062697331
+    6          0.075261298100         0.000805712396
+    7          0.030131404700         0.000101194864
+    8          8.606630554300        -0.000020615233
+    9          4.440097995800         0.000108105014
+   10          1.128102694600        -0.000250848011
+   11          0.543460763100        -0.000292375692
+   12          8.606630554300         0.000042927507
+   13          4.440097995800        -0.000225109201
+   14          1.128102694600         0.000522345759
+   15          0.543460763100         0.000608819668
+   16          8.606630554300        -0.000064535687
+   17          4.440097995800         0.000338421168
+   18          1.128102694600        -0.000785276039
+   19          0.543460763100        -0.000915277839
+ S 7
+    1         11.000000000000        -2.296734381962
+    2          9.500000000000         4.081087013035
+    3          3.638366775900        -3.170381969532
+    4          0.768220267000         2.031793173767
+    5          0.340368240400        -1.337980642766
+    6          0.075261298100         0.458995358634
+    7          0.030131404700        -0.196850977166
+ S 7
+    1         11.000000000000        -2.618176607550
+    2          9.500000000000         4.652260459382
+    3          3.638366775900        -1.536747294950
+    4          0.768220267000         0.680128158524
+    5          0.340368240400        -0.429781727060
+    6          0.075261298100         0.145922676803
+    7          0.030131404700        -0.062703889762
+ S 19
+    1         11.000000000000        -0.007264771166
+    2          9.500000000000         0.012908834166
+    3          3.638366775900        -0.022904457816
+    4          0.768220267000         0.043567439666
+    5          0.340368240400         0.039688051446
+    6          0.075261298100        -0.105992705301
+    7          0.030131404700        -0.046699774274
+    8          8.606630554300        -0.000244680181
+    9          4.440097995800         0.000921586433
+   10          1.128102694600        -0.001077901160
+   11          0.543460763100        -0.000872005690
+   12          8.606630554300         0.000521019249
+   13          4.440097995800        -0.001962415872
+   14          1.128102694600         0.002295270708
+   15          0.543460763100         0.001856839192
+   16          8.606630554300        -0.000771185183
+   17          4.440097995800         0.002904664361
+   18          1.128102694600        -0.003397338516
+   19          0.543460763100        -0.002748395334
+ P 19
+    1         11.000000000000        -0.000000597521
+    2          9.500000000000         0.000001142491
+    3          3.638366775900        -0.000003243956
+    4          0.768220267000         0.000016311934
+    5          0.340368240400         0.000004120609
+    6          0.075261298100        -0.000085638266
+    7          8.606630554300         0.008689347434
+    8          4.440097995800        -0.045566402741
+    9          1.128102694600         0.105732760331
+   10          0.543460763100         0.123236731462
+   11          8.606630554300        -0.008849335704
+   12          4.440097995800         0.046405371373
+   13          1.128102694600        -0.107679511970
+   14          0.543460763100        -0.125505766227
+   15          8.606630554300        -0.008782270674
+   16          4.440097995800         0.046053686487
+   17          1.128102694600        -0.106863458660
+   18          0.543460763100        -0.124554615966
+   19          0.250224060500         0.005452953057
+ P 19
+    1         11.000000000000         0.000000010029
+    2          9.500000000000        -0.000000019175
+    3          3.638366775900         0.000000054813
+    4          0.768220267000        -0.000000250794
+    5          8.606630554300        -0.000000768769
+    6          4.440097995800         0.000004031378
+    7          1.128102694600        -0.000009354451
+    8          0.543460763100        -0.000010903073
+    9          8.606630554300         0.000002135778
+   10          4.440097995800        -0.000011199888
+   11          1.128102694600         0.000025988339
+   12          0.543460763100         0.000030290687
+   13          8.606630554300        -0.000003151808
+   14          4.440097995800         0.000016527888
+   15          1.128102694600        -0.000038351486
+   16          0.543460763100        -0.000044700543
+   17          0.250224060500        -0.000009962138
+   18          0.250224060500         0.000009396604
+   19          0.250224060500        -0.000013954909
+ P 19
+    1         11.000000000000         0.000000698287
+    2          9.500000000000        -0.000001335160
+    3          3.638366775900         0.000003912504
+    4          0.768220267000        -0.000015809650
+    5          0.340368240400        -0.000033628298
+    6          0.075261298100         0.000425605431
+    7          0.030131404700        -0.000649158319
+    8          8.606630554300        -0.005846983757
+    9          4.440097995800         0.030661222686
+   10          1.128102694600        -0.071146623711
+   11          0.543460763100        -0.082924888495
+   12          8.606630554300        -0.004665403634
+   13          4.440097995800         0.024465089303
+   14          1.128102694600        -0.056769050618
+   15          0.543460763100        -0.066167120054
+   16          8.606630554300        -0.001279740905
+   17          4.440097995800         0.006710882482
+   18          1.128102694600        -0.015572002318
+   19          0.543460763100        -0.018149934438
+ P 19
+    1         11.000000000000         0.000000085074
+    2          9.500000000000        -0.000000162665
+    3          3.638366775900         0.000000498362
+    4          0.768220267000        -0.000000779386
+    5          0.340368240400        -0.000010267453
+    6          0.075261298100         0.000071590387
+    7          0.030131404700        -0.000086081522
+    8          8.606630554300        -0.000001126214
+    9          4.440097995800         0.000005905796
+   10          1.128102694600        -0.000013703872
+   11          0.543460763100        -0.000015972537
+   12          8.606630554300         0.000002192454
+   13          4.440097995800        -0.000011497094
+   14          1.128102694600         0.000026677977
+   15          0.543460763100         0.000031094494
+   16          8.606630554300        -0.000003635678
+   17          4.440097995800         0.000019065271
+   18          1.128102694600        -0.000044239255
+   19          0.543460763100        -0.000051563027
+ P 19
+    1          8.606630554300        -0.000001932407
+    2          4.440097995800         0.000010133422
+    3          1.128102694600        -0.000023513698
+    4          0.543460763100        -0.000027406371
+    5          8.606630554300        -0.000001115021
+    6          4.440097995800         0.000005847099
+    7          1.128102694600        -0.000013567670
+    8          0.543460763100        -0.000015813787
+    9          8.606630554300        -0.000000963929
+   10          4.440097995800         0.000005054785
+   11          1.128102694600        -0.000011729176
+   12          0.543460763100        -0.000013670932
+   13          0.250224060500        -0.000073810510
+   14          0.250224060500        -0.000059178921
+   15          0.250224060500        -0.000016566491
+   16          0.085000000000         0.000517293376
+   17          0.085000000000         0.000390923683
+   18          0.085000000000         0.000152684876
+   19          0.029000000000        -0.000498002014
+ P 19
+    1         11.000000000000         0.000000004387
+    2          9.500000000000        -0.000000008388
+    3          3.638366775900         0.000000026094
+    4          0.340368240400        -0.000000308269
+    5          8.606630554300         0.000000504678
+    6          4.440097995800        -0.000002646499
+    7          1.128102694600         0.000006140965
+    8          0.543460763100         0.000007157597
+    9          8.606630554300         0.000001037317
+   10          4.440097995800        -0.000005439625
+   11          1.128102694600         0.000012622164
+   12          0.543460763100         0.000014711753
+   13          8.606630554300        -0.000001519107
+   14          4.440097995800         0.000007966106
+   15          1.128102694600        -0.000018484636
+   16          0.543460763100        -0.000021544752
+   17          0.250224060500        -0.000022810810
+   18          0.250224060500        -0.000047034667
+   19          0.250224060500         0.000068881800
+ P 19
+    1         11.000000000000         0.000000033264
+    2          9.500000000000        -0.000000063603
+    3          3.638366775900         0.000000180442
+    4          0.768220267000        -0.000001386510
+    5          0.340368240400         0.000001853345
+    6          8.606630554300        -0.000000596152
+    7          4.440097995800         0.000003126184
+    8          1.128102694600        -0.000007254031
+    9          0.543460763100        -0.000008454930
+   10          8.606630554300         0.000001023087
+   11          4.440097995800        -0.000005365003
+   12          1.128102694600         0.000012449009
+   13          0.543460763100         0.000014509932
+   14          8.606630554300        -0.000001332304
+   15          4.440097995800         0.000006986520
+   16          1.128102694600        -0.000016211594
+   17          0.543460763100        -0.000018895410
+   18          0.250224060500        -0.000059620430
+   19          0.250224060500         0.000032169812
+ P 19
+    1         11.000000000000         0.000001052711
+    2          9.500000000000        -0.000002012837
+    3          3.638366775900         0.000006301597
+    4          0.768220267000        -0.000070308559
+    5          0.340368240400         0.000138472817
+    6          0.075261298100        -0.000086176017
+    7          0.030131404700        -0.000092373345
+    8          8.606630554300        -0.015335130828
+    9          4.440097995800         0.080416481522
+   10          1.128102694600        -0.186599249796
+   11          0.543460763100        -0.217490601459
+   12          8.606630554300         0.032311864310
+   13          4.440097995800        -0.169441426252
+   14          1.128102694600         0.393173668190
+   15          0.543460763100         0.458263244175
+   16          8.606630554300        -0.047731539343
+   17          4.440097995800         0.250301252382
+   18          1.128102694600        -0.580801659479
+   19          0.543460763100        -0.676952894431
+ end
+  // -----------------------------------------------
+  // The basis set
+  // -----------------------------------------------
+  BAS[ATNO] = new BFNGauss[NSH];
+  // Basis function   1 L = s
+  InitBFNGauss(BAS[ATNO][  0]);
+  BAS[ATNO][  0].l  = 0;
+  BAS[ATNO][  0].ng = 7;
+  BAS[ATNO][  0].a[  0] =        11.000000000000;     BAS[ATNO][  0].d[  0] =        -0.212498873349;
+  BAS[ATNO][  0].a[  1] =         9.500000000000;     BAS[ATNO][  0].d[  1] =         0.377591069790;
+  BAS[ATNO][  0].a[  2] =         3.638366775900;     BAS[ATNO][  0].d[  2] =        -0.626134695703;
+  BAS[ATNO][  0].a[  3] =         0.768220267000;     BAS[ATNO][  0].d[  3] =         0.901679683233;
+  BAS[ATNO][  0].a[  4] =         0.340368240400;     BAS[ATNO][  0].d[  4] =         0.374935515345;
+  BAS[ATNO][  0].a[  5] =         0.075261298100;     BAS[ATNO][  0].d[  5] =        -0.002382934900;
+  BAS[ATNO][  0].a[  6] =         0.030131404700;     BAS[ATNO][  0].d[  6] =         0.002554383486;
+
+  // Basis function   2 L = p
+  InitBFNGauss(BAS[ATNO][  1]);
+  BAS[ATNO][  1].l  = 1;
+  BAS[ATNO][  1].ng = 19;
+  BAS[ATNO][  1].a[  0] =        11.000000000000;     BAS[ATNO][  1].d[  0] =        -0.000000108079;
+  BAS[ATNO][  1].a[  1] =         9.500000000000;     BAS[ATNO][  1].d[  1] =         0.000000206652;
+  BAS[ATNO][  1].a[  2] =         3.638366775900;     BAS[ATNO][  1].d[  2] =        -0.000000580389;
+  BAS[ATNO][  1].a[  3] =         0.768220267000;     BAS[ATNO][  1].d[  3] =         0.000002935781;
+  BAS[ATNO][  1].a[  4] =         0.340368240400;     BAS[ATNO][  1].d[  4] =        -0.000002124398;
+  BAS[ATNO][  1].a[  5] =         0.075261298100;     BAS[ATNO][  1].d[  5] =         0.000002413990;
+  BAS[ATNO][  1].a[  6] =         8.606630554300;     BAS[ATNO][  1].d[  6] =         0.028191993203;
+  BAS[ATNO][  1].a[  7] =         4.440097995800;     BAS[ATNO][  1].d[  7] =        -0.147837075925;
+  BAS[ATNO][  1].a[  8] =         1.128102694600;     BAS[ATNO][  1].d[  8] =         0.343042706391;
+  BAS[ATNO][  1].a[  9] =         0.543460763100;     BAS[ATNO][  1].d[  9] =         0.399833143061;
+  BAS[ATNO][  1].a[ 10] =         8.606630554300;     BAS[ATNO][  1].d[ 10] =         0.023612898064;
+  BAS[ATNO][  1].a[ 11] =         4.440097995800;     BAS[ATNO][  1].d[ 11] =        -0.123824583056;
+  BAS[ATNO][  1].a[ 12] =         1.128102694600;     BAS[ATNO][  1].d[ 12] =         0.287323865298;
+  BAS[ATNO][  1].a[ 13] =         0.543460763100;     BAS[ATNO][  1].d[ 13] =         0.334890093852;
+  BAS[ATNO][  1].a[ 14] =         8.606630554300;     BAS[ATNO][  1].d[ 14] =         0.006927279539;
+  BAS[ATNO][  1].a[ 15] =         4.440097995800;     BAS[ATNO][  1].d[ 15] =        -0.036326227230;
+  BAS[ATNO][  1].a[ 16] =         1.128102694600;     BAS[ATNO][  1].d[ 16] =         0.084291759857;
+  BAS[ATNO][  1].a[ 17] =         0.543460763100;     BAS[ATNO][  1].d[ 17] =         0.098246191071;
+  BAS[ATNO][  1].a[ 18] =         0.250224060500;     BAS[ATNO][  1].d[ 18] =         0.114269253282;
+
+  // Basis function   3 L = s
+  InitBFNGauss(BAS[ATNO][  2]);
+  BAS[ATNO][  2].l  = 0;
+  BAS[ATNO][  2].ng = 7;
+  BAS[ATNO][  2].a[  0] =        11.000000000000;     BAS[ATNO][  2].d[  0] =         0.086082448615;
+  BAS[ATNO][  2].a[  1] =         9.500000000000;     BAS[ATNO][  2].d[  1] =        -0.152960640923;
+  BAS[ATNO][  2].a[  2] =         3.638366775900;     BAS[ATNO][  2].d[  2] =         0.268895886943;
+  BAS[ATNO][  2].a[  3] =         0.768220267000;     BAS[ATNO][  2].d[  3] =        -0.586252022681;
+  BAS[ATNO][  2].a[  4] =         0.340368240400;     BAS[ATNO][  2].d[  4] =        -0.203992239383;
+  BAS[ATNO][  2].a[  5] =         0.075261298100;     BAS[ATNO][  2].d[  5] =         1.110047906610;
+  BAS[ATNO][  2].a[  6] =         0.030131404700;     BAS[ATNO][  2].d[  6] =         0.072696948041;
+
+  // Basis function   4 L = p
+  InitBFNGauss(BAS[ATNO][  3]);
+  BAS[ATNO][  3].l  = 1;
+  BAS[ATNO][  3].ng = 19;
+  BAS[ATNO][  3].a[  0] =        11.000000000000;     BAS[ATNO][  3].d[  0] =        -0.000005319721;
+  BAS[ATNO][  3].a[  1] =         9.500000000000;     BAS[ATNO][  3].d[  1] =         0.000010171582;
+  BAS[ATNO][  3].a[  2] =         3.638366775900;     BAS[ATNO][  3].d[  2] =        -0.000028900996;
+  BAS[ATNO][  3].a[  3] =         0.768220267000;     BAS[ATNO][  3].d[  3] =         0.000139378466;
+  BAS[ATNO][  3].a[  4] =         0.340368240400;     BAS[ATNO][  3].d[  4] =         0.000062697331;
+  BAS[ATNO][  3].a[  5] =         0.075261298100;     BAS[ATNO][  3].d[  5] =        -0.000805712396;
+  BAS[ATNO][  3].a[  6] =         0.030131404700;     BAS[ATNO][  3].d[  6] =        -0.000101194864;
+  BAS[ATNO][  3].a[  7] =         8.606630554300;     BAS[ATNO][  3].d[  7] =         0.000020615233;
+  BAS[ATNO][  3].a[  8] =         4.440097995800;     BAS[ATNO][  3].d[  8] =        -0.000108105014;
+  BAS[ATNO][  3].a[  9] =         1.128102694600;     BAS[ATNO][  3].d[  9] =         0.000250848011;
+  BAS[ATNO][  3].a[ 10] =         0.543460763100;     BAS[ATNO][  3].d[ 10] =         0.000292375692;
+  BAS[ATNO][  3].a[ 11] =         8.606630554300;     BAS[ATNO][  3].d[ 11] =        -0.000042927507;
+  BAS[ATNO][  3].a[ 12] =         4.440097995800;     BAS[ATNO][  3].d[ 12] =         0.000225109201;
+  BAS[ATNO][  3].a[ 13] =         1.128102694600;     BAS[ATNO][  3].d[ 13] =        -0.000522345759;
+  BAS[ATNO][  3].a[ 14] =         0.543460763100;     BAS[ATNO][  3].d[ 14] =        -0.000608819668;
+  BAS[ATNO][  3].a[ 15] =         8.606630554300;     BAS[ATNO][  3].d[ 15] =         0.000064535687;
+  BAS[ATNO][  3].a[ 16] =         4.440097995800;     BAS[ATNO][  3].d[ 16] =        -0.000338421168;
+  BAS[ATNO][  3].a[ 17] =         1.128102694600;     BAS[ATNO][  3].d[ 17] =         0.000785276039;
+  BAS[ATNO][  3].a[ 18] =         0.543460763100;     BAS[ATNO][  3].d[ 18] =         0.000915277839;
+
+  // Basis function   5 L = s
+  InitBFNGauss(BAS[ATNO][  4]);
+  BAS[ATNO][  4].l  = 0;
+  BAS[ATNO][  4].ng = 7;
+  BAS[ATNO][  4].a[  0] =        11.000000000000;     BAS[ATNO][  4].d[  0] =        -2.296734381962;
+  BAS[ATNO][  4].a[  1] =         9.500000000000;     BAS[ATNO][  4].d[  1] =         4.081087013035;
+  BAS[ATNO][  4].a[  2] =         3.638366775900;     BAS[ATNO][  4].d[  2] =        -3.170381969532;
+  BAS[ATNO][  4].a[  3] =         0.768220267000;     BAS[ATNO][  4].d[  3] =         2.031793173767;
+  BAS[ATNO][  4].a[  4] =         0.340368240400;     BAS[ATNO][  4].d[  4] =        -1.337980642766;
+  BAS[ATNO][  4].a[  5] =         0.075261298100;     BAS[ATNO][  4].d[  5] =         0.458995358634;
+  BAS[ATNO][  4].a[  6] =         0.030131404700;     BAS[ATNO][  4].d[  6] =        -0.196850977166;
+
+  // Basis function   6 L = s
+  InitBFNGauss(BAS[ATNO][  5]);
+  BAS[ATNO][  5].l  = 0;
+  BAS[ATNO][  5].ng = 7;
+  BAS[ATNO][  5].a[  0] =        11.000000000000;     BAS[ATNO][  5].d[  0] =        -2.618176607550;
+  BAS[ATNO][  5].a[  1] =         9.500000000000;     BAS[ATNO][  5].d[  1] =         4.652260459382;
+  BAS[ATNO][  5].a[  2] =         3.638366775900;     BAS[ATNO][  5].d[  2] =        -1.536747294950;
+  BAS[ATNO][  5].a[  3] =         0.768220267000;     BAS[ATNO][  5].d[  3] =         0.680128158524;
+  BAS[ATNO][  5].a[  4] =         0.340368240400;     BAS[ATNO][  5].d[  4] =        -0.429781727060;
+  BAS[ATNO][  5].a[  5] =         0.075261298100;     BAS[ATNO][  5].d[  5] =         0.145922676803;
+  BAS[ATNO][  5].a[  6] =         0.030131404700;     BAS[ATNO][  5].d[  6] =        -0.062703889762;
+
+  // Basis function   7 L = s
+  InitBFNGauss(BAS[ATNO][  6]);
+  BAS[ATNO][  6].l  = 0;
+  BAS[ATNO][  6].ng = 19;
+  BAS[ATNO][  6].a[  0] =        11.000000000000;     BAS[ATNO][  6].d[  0] =         0.007264771166;
+  BAS[ATNO][  6].a[  1] =         9.500000000000;     BAS[ATNO][  6].d[  1] =        -0.012908834166;
+  BAS[ATNO][  6].a[  2] =         3.638366775900;     BAS[ATNO][  6].d[  2] =         0.022904457816;
+  BAS[ATNO][  6].a[  3] =         0.768220267000;     BAS[ATNO][  6].d[  3] =        -0.043567439666;
+  BAS[ATNO][  6].a[  4] =         0.340368240400;     BAS[ATNO][  6].d[  4] =        -0.039688051446;
+  BAS[ATNO][  6].a[  5] =         0.075261298100;     BAS[ATNO][  6].d[  5] =         0.105992705301;
+  BAS[ATNO][  6].a[  6] =         0.030131404700;     BAS[ATNO][  6].d[  6] =         0.046699774274;
+  BAS[ATNO][  6].a[  7] =         8.606630554300;     BAS[ATNO][  6].d[  7] =         0.000244680181;
+  BAS[ATNO][  6].a[  8] =         4.440097995800;     BAS[ATNO][  6].d[  8] =        -0.000921586433;
+  BAS[ATNO][  6].a[  9] =         1.128102694600;     BAS[ATNO][  6].d[  9] =         0.001077901160;
+  BAS[ATNO][  6].a[ 10] =         0.543460763100;     BAS[ATNO][  6].d[ 10] =         0.000872005690;
+  BAS[ATNO][  6].a[ 11] =         8.606630554300;     BAS[ATNO][  6].d[ 11] =        -0.000521019249;
+  BAS[ATNO][  6].a[ 12] =         4.440097995800;     BAS[ATNO][  6].d[ 12] =         0.001962415872;
+  BAS[ATNO][  6].a[ 13] =         1.128102694600;     BAS[ATNO][  6].d[ 13] =        -0.002295270708;
+  BAS[ATNO][  6].a[ 14] =         0.543460763100;     BAS[ATNO][  6].d[ 14] =        -0.001856839192;
+  BAS[ATNO][  6].a[ 15] =         8.606630554300;     BAS[ATNO][  6].d[ 15] =         0.000771185183;
+  BAS[ATNO][  6].a[ 16] =         4.440097995800;     BAS[ATNO][  6].d[ 16] =        -0.002904664361;
+  BAS[ATNO][  6].a[ 17] =         1.128102694600;     BAS[ATNO][  6].d[ 17] =         0.003397338516;
+  BAS[ATNO][  6].a[ 18] =         0.543460763100;     BAS[ATNO][  6].d[ 18] =         0.002748395334;
+
+  // Basis function   8 L = p
+  InitBFNGauss(BAS[ATNO][  7]);
+  BAS[ATNO][  7].l  = 1;
+  BAS[ATNO][  7].ng = 19;
+  BAS[ATNO][  7].a[  0] =        11.000000000000;     BAS[ATNO][  7].d[  0] =         0.000000597521;
+  BAS[ATNO][  7].a[  1] =         9.500000000000;     BAS[ATNO][  7].d[  1] =        -0.000001142491;
+  BAS[ATNO][  7].a[  2] =         3.638366775900;     BAS[ATNO][  7].d[  2] =         0.000003243956;
+  BAS[ATNO][  7].a[  3] =         0.768220267000;     BAS[ATNO][  7].d[  3] =        -0.000016311934;
+  BAS[ATNO][  7].a[  4] =         0.340368240400;     BAS[ATNO][  7].d[  4] =        -0.000004120609;
+  BAS[ATNO][  7].a[  5] =         0.075261298100;     BAS[ATNO][  7].d[  5] =         0.000085638266;
+  BAS[ATNO][  7].a[  6] =         8.606630554300;     BAS[ATNO][  7].d[  6] =        -0.008689347434;
+  BAS[ATNO][  7].a[  7] =         4.440097995800;     BAS[ATNO][  7].d[  7] =         0.045566402741;
+  BAS[ATNO][  7].a[  8] =         1.128102694600;     BAS[ATNO][  7].d[  8] =        -0.105732760331;
+  BAS[ATNO][  7].a[  9] =         0.543460763100;     BAS[ATNO][  7].d[  9] =        -0.123236731462;
+  BAS[ATNO][  7].a[ 10] =         8.606630554300;     BAS[ATNO][  7].d[ 10] =         0.008849335704;
+  BAS[ATNO][  7].a[ 11] =         4.440097995800;     BAS[ATNO][  7].d[ 11] =        -0.046405371373;
+  BAS[ATNO][  7].a[ 12] =         1.128102694600;     BAS[ATNO][  7].d[ 12] =         0.107679511970;
+  BAS[ATNO][  7].a[ 13] =         0.543460763100;     BAS[ATNO][  7].d[ 13] =         0.125505766227;
+  BAS[ATNO][  7].a[ 14] =         8.606630554300;     BAS[ATNO][  7].d[ 14] =         0.008782270674;
+  BAS[ATNO][  7].a[ 15] =         4.440097995800;     BAS[ATNO][  7].d[ 15] =        -0.046053686487;
+  BAS[ATNO][  7].a[ 16] =         1.128102694600;     BAS[ATNO][  7].d[ 16] =         0.106863458660;
+  BAS[ATNO][  7].a[ 17] =         0.543460763100;     BAS[ATNO][  7].d[ 17] =         0.124554615966;
+  BAS[ATNO][  7].a[ 18] =         0.250224060500;     BAS[ATNO][  7].d[ 18] =        -0.005452953057;
+
+  // Basis function   9 L = p
+  InitBFNGauss(BAS[ATNO][  8]);
+  BAS[ATNO][  8].l  = 1;
+  BAS[ATNO][  8].ng = 19;
+  BAS[ATNO][  8].a[  0] =        11.000000000000;     BAS[ATNO][  8].d[  0] =        -0.000000010029;
+  BAS[ATNO][  8].a[  1] =         9.500000000000;     BAS[ATNO][  8].d[  1] =         0.000000019175;
+  BAS[ATNO][  8].a[  2] =         3.638366775900;     BAS[ATNO][  8].d[  2] =        -0.000000054813;
+  BAS[ATNO][  8].a[  3] =         0.768220267000;     BAS[ATNO][  8].d[  3] =         0.000000250794;
+  BAS[ATNO][  8].a[  4] =         8.606630554300;     BAS[ATNO][  8].d[  4] =         0.000000768769;
+  BAS[ATNO][  8].a[  5] =         4.440097995800;     BAS[ATNO][  8].d[  5] =        -0.000004031378;
+  BAS[ATNO][  8].a[  6] =         1.128102694600;     BAS[ATNO][  8].d[  6] =         0.000009354451;
+  BAS[ATNO][  8].a[  7] =         0.543460763100;     BAS[ATNO][  8].d[  7] =         0.000010903073;
+  BAS[ATNO][  8].a[  8] =         8.606630554300;     BAS[ATNO][  8].d[  8] =        -0.000002135778;
+  BAS[ATNO][  8].a[  9] =         4.440097995800;     BAS[ATNO][  8].d[  9] =         0.000011199888;
+  BAS[ATNO][  8].a[ 10] =         1.128102694600;     BAS[ATNO][  8].d[ 10] =        -0.000025988339;
+  BAS[ATNO][  8].a[ 11] =         0.543460763100;     BAS[ATNO][  8].d[ 11] =        -0.000030290687;
+  BAS[ATNO][  8].a[ 12] =         8.606630554300;     BAS[ATNO][  8].d[ 12] =         0.000003151808;
+  BAS[ATNO][  8].a[ 13] =         4.440097995800;     BAS[ATNO][  8].d[ 13] =        -0.000016527888;
+  BAS[ATNO][  8].a[ 14] =         1.128102694600;     BAS[ATNO][  8].d[ 14] =         0.000038351486;
+  BAS[ATNO][  8].a[ 15] =         0.543460763100;     BAS[ATNO][  8].d[ 15] =         0.000044700543;
+  BAS[ATNO][  8].a[ 16] =         0.250224060500;     BAS[ATNO][  8].d[ 16] =         0.000009962138;
+  BAS[ATNO][  8].a[ 17] =         0.250224060500;     BAS[ATNO][  8].d[ 17] =        -0.000009396604;
+  BAS[ATNO][  8].a[ 18] =         0.250224060500;     BAS[ATNO][  8].d[ 18] =         0.000013954909;
+
+  // Basis function  10 L = p
+  InitBFNGauss(BAS[ATNO][  9]);
+  BAS[ATNO][  9].l  = 1;
+  BAS[ATNO][  9].ng = 19;
+  BAS[ATNO][  9].a[  0] =        11.000000000000;     BAS[ATNO][  9].d[  0] =        -0.000000698287;
+  BAS[ATNO][  9].a[  1] =         9.500000000000;     BAS[ATNO][  9].d[  1] =         0.000001335160;
+  BAS[ATNO][  9].a[  2] =         3.638366775900;     BAS[ATNO][  9].d[  2] =        -0.000003912504;
+  BAS[ATNO][  9].a[  3] =         0.768220267000;     BAS[ATNO][  9].d[  3] =         0.000015809650;
+  BAS[ATNO][  9].a[  4] =         0.340368240400;     BAS[ATNO][  9].d[  4] =         0.000033628298;
+  BAS[ATNO][  9].a[  5] =         0.075261298100;     BAS[ATNO][  9].d[  5] =        -0.000425605431;
+  BAS[ATNO][  9].a[  6] =         0.030131404700;     BAS[ATNO][  9].d[  6] =         0.000649158319;
+  BAS[ATNO][  9].a[  7] =         8.606630554300;     BAS[ATNO][  9].d[  7] =         0.005846983757;
+  BAS[ATNO][  9].a[  8] =         4.440097995800;     BAS[ATNO][  9].d[  8] =        -0.030661222686;
+  BAS[ATNO][  9].a[  9] =         1.128102694600;     BAS[ATNO][  9].d[  9] =         0.071146623711;
+  BAS[ATNO][  9].a[ 10] =         0.543460763100;     BAS[ATNO][  9].d[ 10] =         0.082924888495;
+  BAS[ATNO][  9].a[ 11] =         8.606630554300;     BAS[ATNO][  9].d[ 11] =         0.004665403634;
+  BAS[ATNO][  9].a[ 12] =         4.440097995800;     BAS[ATNO][  9].d[ 12] =        -0.024465089303;
+  BAS[ATNO][  9].a[ 13] =         1.128102694600;     BAS[ATNO][  9].d[ 13] =         0.056769050618;
+  BAS[ATNO][  9].a[ 14] =         0.543460763100;     BAS[ATNO][  9].d[ 14] =         0.066167120054;
+  BAS[ATNO][  9].a[ 15] =         8.606630554300;     BAS[ATNO][  9].d[ 15] =         0.001279740905;
+  BAS[ATNO][  9].a[ 16] =         4.440097995800;     BAS[ATNO][  9].d[ 16] =        -0.006710882482;
+  BAS[ATNO][  9].a[ 17] =         1.128102694600;     BAS[ATNO][  9].d[ 17] =         0.015572002318;
+  BAS[ATNO][  9].a[ 18] =         0.543460763100;     BAS[ATNO][  9].d[ 18] =         0.018149934438;
+
+  // Basis function  11 L = p
+  InitBFNGauss(BAS[ATNO][ 10]);
+  BAS[ATNO][ 10].l  = 1;
+  BAS[ATNO][ 10].ng = 19;
+  BAS[ATNO][ 10].a[  0] =        11.000000000000;     BAS[ATNO][ 10].d[  0] =        -0.000000085074;
+  BAS[ATNO][ 10].a[  1] =         9.500000000000;     BAS[ATNO][ 10].d[  1] =         0.000000162665;
+  BAS[ATNO][ 10].a[  2] =         3.638366775900;     BAS[ATNO][ 10].d[  2] =        -0.000000498362;
+  BAS[ATNO][ 10].a[  3] =         0.768220267000;     BAS[ATNO][ 10].d[  3] =         0.000000779386;
+  BAS[ATNO][ 10].a[  4] =         0.340368240400;     BAS[ATNO][ 10].d[  4] =         0.000010267453;
+  BAS[ATNO][ 10].a[  5] =         0.075261298100;     BAS[ATNO][ 10].d[  5] =        -0.000071590387;
+  BAS[ATNO][ 10].a[  6] =         0.030131404700;     BAS[ATNO][ 10].d[  6] =         0.000086081522;
+  BAS[ATNO][ 10].a[  7] =         8.606630554300;     BAS[ATNO][ 10].d[  7] =         0.000001126214;
+  BAS[ATNO][ 10].a[  8] =         4.440097995800;     BAS[ATNO][ 10].d[  8] =        -0.000005905796;
+  BAS[ATNO][ 10].a[  9] =         1.128102694600;     BAS[ATNO][ 10].d[  9] =         0.000013703872;
+  BAS[ATNO][ 10].a[ 10] =         0.543460763100;     BAS[ATNO][ 10].d[ 10] =         0.000015972537;
+  BAS[ATNO][ 10].a[ 11] =         8.606630554300;     BAS[ATNO][ 10].d[ 11] =        -0.000002192454;
+  BAS[ATNO][ 10].a[ 12] =         4.440097995800;     BAS[ATNO][ 10].d[ 12] =         0.000011497094;
+  BAS[ATNO][ 10].a[ 13] =         1.128102694600;     BAS[ATNO][ 10].d[ 13] =        -0.000026677977;
+  BAS[ATNO][ 10].a[ 14] =         0.543460763100;     BAS[ATNO][ 10].d[ 14] =        -0.000031094494;
+  BAS[ATNO][ 10].a[ 15] =         8.606630554300;     BAS[ATNO][ 10].d[ 15] =         0.000003635678;
+  BAS[ATNO][ 10].a[ 16] =         4.440097995800;     BAS[ATNO][ 10].d[ 16] =        -0.000019065271;
+  BAS[ATNO][ 10].a[ 17] =         1.128102694600;     BAS[ATNO][ 10].d[ 17] =         0.000044239255;
+  BAS[ATNO][ 10].a[ 18] =         0.543460763100;     BAS[ATNO][ 10].d[ 18] =         0.000051563027;
+
+  // Basis function  12 L = p
+  InitBFNGauss(BAS[ATNO][ 11]);
+  BAS[ATNO][ 11].l  = 1;
+  BAS[ATNO][ 11].ng = 19;
+  BAS[ATNO][ 11].a[  0] =         8.606630554300;     BAS[ATNO][ 11].d[  0] =        -0.000001932407;
+  BAS[ATNO][ 11].a[  1] =         4.440097995800;     BAS[ATNO][ 11].d[  1] =         0.000010133422;
+  BAS[ATNO][ 11].a[  2] =         1.128102694600;     BAS[ATNO][ 11].d[  2] =        -0.000023513698;
+  BAS[ATNO][ 11].a[  3] =         0.543460763100;     BAS[ATNO][ 11].d[  3] =        -0.000027406371;
+  BAS[ATNO][ 11].a[  4] =         8.606630554300;     BAS[ATNO][ 11].d[  4] =        -0.000001115021;
+  BAS[ATNO][ 11].a[  5] =         4.440097995800;     BAS[ATNO][ 11].d[  5] =         0.000005847099;
+  BAS[ATNO][ 11].a[  6] =         1.128102694600;     BAS[ATNO][ 11].d[  6] =        -0.000013567670;
+  BAS[ATNO][ 11].a[  7] =         0.543460763100;     BAS[ATNO][ 11].d[  7] =        -0.000015813787;
+  BAS[ATNO][ 11].a[  8] =         8.606630554300;     BAS[ATNO][ 11].d[  8] =        -0.000000963929;
+  BAS[ATNO][ 11].a[  9] =         4.440097995800;     BAS[ATNO][ 11].d[  9] =         0.000005054785;
+  BAS[ATNO][ 11].a[ 10] =         1.128102694600;     BAS[ATNO][ 11].d[ 10] =        -0.000011729176;
+  BAS[ATNO][ 11].a[ 11] =         0.543460763100;     BAS[ATNO][ 11].d[ 11] =        -0.000013670932;
+  BAS[ATNO][ 11].a[ 12] =         0.250224060500;     BAS[ATNO][ 11].d[ 12] =        -0.000073810510;
+  BAS[ATNO][ 11].a[ 13] =         0.250224060500;     BAS[ATNO][ 11].d[ 13] =        -0.000059178921;
+  BAS[ATNO][ 11].a[ 14] =         0.250224060500;     BAS[ATNO][ 11].d[ 14] =        -0.000016566491;
+  BAS[ATNO][ 11].a[ 15] =         0.085000000000;     BAS[ATNO][ 11].d[ 15] =         0.000517293376;
+  BAS[ATNO][ 11].a[ 16] =         0.085000000000;     BAS[ATNO][ 11].d[ 16] =         0.000390923683;
+  BAS[ATNO][ 11].a[ 17] =         0.085000000000;     BAS[ATNO][ 11].d[ 17] =         0.000152684876;
+  BAS[ATNO][ 11].a[ 18] =         0.029000000000;     BAS[ATNO][ 11].d[ 18] =        -0.000498002014;
+
+  // Basis function  13 L = p
+  InitBFNGauss(BAS[ATNO][ 12]);
+  BAS[ATNO][ 12].l  = 1;
+  BAS[ATNO][ 12].ng = 19;
+  BAS[ATNO][ 12].a[  0] =        11.000000000000;     BAS[ATNO][ 12].d[  0] =         0.000000004387;
+  BAS[ATNO][ 12].a[  1] =         9.500000000000;     BAS[ATNO][ 12].d[  1] =        -0.000000008388;
+  BAS[ATNO][ 12].a[  2] =         3.638366775900;     BAS[ATNO][ 12].d[  2] =         0.000000026094;
+  BAS[ATNO][ 12].a[  3] =         0.340368240400;     BAS[ATNO][ 12].d[  3] =        -0.000000308269;
+  BAS[ATNO][ 12].a[  4] =         8.606630554300;     BAS[ATNO][ 12].d[  4] =         0.000000504678;
+  BAS[ATNO][ 12].a[  5] =         4.440097995800;     BAS[ATNO][ 12].d[  5] =        -0.000002646499;
+  BAS[ATNO][ 12].a[  6] =         1.128102694600;     BAS[ATNO][ 12].d[  6] =         0.000006140965;
+  BAS[ATNO][ 12].a[  7] =         0.543460763100;     BAS[ATNO][ 12].d[  7] =         0.000007157597;
+  BAS[ATNO][ 12].a[  8] =         8.606630554300;     BAS[ATNO][ 12].d[  8] =         0.000001037317;
+  BAS[ATNO][ 12].a[  9] =         4.440097995800;     BAS[ATNO][ 12].d[  9] =        -0.000005439625;
+  BAS[ATNO][ 12].a[ 10] =         1.128102694600;     BAS[ATNO][ 12].d[ 10] =         0.000012622164;
+  BAS[ATNO][ 12].a[ 11] =         0.543460763100;     BAS[ATNO][ 12].d[ 11] =         0.000014711753;
+  BAS[ATNO][ 12].a[ 12] =         8.606630554300;     BAS[ATNO][ 12].d[ 12] =        -0.000001519107;
+  BAS[ATNO][ 12].a[ 13] =         4.440097995800;     BAS[ATNO][ 12].d[ 13] =         0.000007966106;
+  BAS[ATNO][ 12].a[ 14] =         1.128102694600;     BAS[ATNO][ 12].d[ 14] =        -0.000018484636;
+  BAS[ATNO][ 12].a[ 15] =         0.543460763100;     BAS[ATNO][ 12].d[ 15] =        -0.000021544752;
+  BAS[ATNO][ 12].a[ 16] =         0.250224060500;     BAS[ATNO][ 12].d[ 16] =        -0.000022810810;
+  BAS[ATNO][ 12].a[ 17] =         0.250224060500;     BAS[ATNO][ 12].d[ 17] =        -0.000047034667;
+  BAS[ATNO][ 12].a[ 18] =         0.250224060500;     BAS[ATNO][ 12].d[ 18] =         0.000068881800;
+
+  // Basis function  14 L = p
+  InitBFNGauss(BAS[ATNO][ 13]);
+  BAS[ATNO][ 13].l  = 1;
+  BAS[ATNO][ 13].ng = 19;
+  BAS[ATNO][ 13].a[  0] =        11.000000000000;     BAS[ATNO][ 13].d[  0] =        -0.000000033264;
+  BAS[ATNO][ 13].a[  1] =         9.500000000000;     BAS[ATNO][ 13].d[  1] =         0.000000063603;
+  BAS[ATNO][ 13].a[  2] =         3.638366775900;     BAS[ATNO][ 13].d[  2] =        -0.000000180442;
+  BAS[ATNO][ 13].a[  3] =         0.768220267000;     BAS[ATNO][ 13].d[  3] =         0.000001386510;
+  BAS[ATNO][ 13].a[  4] =         0.340368240400;     BAS[ATNO][ 13].d[  4] =        -0.000001853345;
+  BAS[ATNO][ 13].a[  5] =         8.606630554300;     BAS[ATNO][ 13].d[  5] =         0.000000596152;
+  BAS[ATNO][ 13].a[  6] =         4.440097995800;     BAS[ATNO][ 13].d[  6] =        -0.000003126184;
+  BAS[ATNO][ 13].a[  7] =         1.128102694600;     BAS[ATNO][ 13].d[  7] =         0.000007254031;
+  BAS[ATNO][ 13].a[  8] =         0.543460763100;     BAS[ATNO][ 13].d[  8] =         0.000008454930;
+  BAS[ATNO][ 13].a[  9] =         8.606630554300;     BAS[ATNO][ 13].d[  9] =        -0.000001023087;
+  BAS[ATNO][ 13].a[ 10] =         4.440097995800;     BAS[ATNO][ 13].d[ 10] =         0.000005365003;
+  BAS[ATNO][ 13].a[ 11] =         1.128102694600;     BAS[ATNO][ 13].d[ 11] =        -0.000012449009;
+  BAS[ATNO][ 13].a[ 12] =         0.543460763100;     BAS[ATNO][ 13].d[ 12] =        -0.000014509932;
+  BAS[ATNO][ 13].a[ 13] =         8.606630554300;     BAS[ATNO][ 13].d[ 13] =         0.000001332304;
+  BAS[ATNO][ 13].a[ 14] =         4.440097995800;     BAS[ATNO][ 13].d[ 14] =        -0.000006986520;
+  BAS[ATNO][ 13].a[ 15] =         1.128102694600;     BAS[ATNO][ 13].d[ 15] =         0.000016211594;
+  BAS[ATNO][ 13].a[ 16] =         0.543460763100;     BAS[ATNO][ 13].d[ 16] =         0.000018895410;
+  BAS[ATNO][ 13].a[ 17] =         0.250224060500;     BAS[ATNO][ 13].d[ 17] =         0.000059620430;
+  BAS[ATNO][ 13].a[ 18] =         0.250224060500;     BAS[ATNO][ 13].d[ 18] =        -0.000032169812;
+
+  // Basis function  15 L = p
+  InitBFNGauss(BAS[ATNO][ 14]);
+  BAS[ATNO][ 14].l  = 1;
+  BAS[ATNO][ 14].ng = 19;
+  BAS[ATNO][ 14].a[  0] =        11.000000000000;     BAS[ATNO][ 14].d[  0] =        -0.000001052711;
+  BAS[ATNO][ 14].a[  1] =         9.500000000000;     BAS[ATNO][ 14].d[  1] =         0.000002012837;
+  BAS[ATNO][ 14].a[  2] =         3.638366775900;     BAS[ATNO][ 14].d[  2] =        -0.000006301597;
+  BAS[ATNO][ 14].a[  3] =         0.768220267000;     BAS[ATNO][ 14].d[  3] =         0.000070308559;
+  BAS[ATNO][ 14].a[  4] =         0.340368240400;     BAS[ATNO][ 14].d[  4] =        -0.000138472817;
+  BAS[ATNO][ 14].a[  5] =         0.075261298100;     BAS[ATNO][ 14].d[  5] =         0.000086176017;
+  BAS[ATNO][ 14].a[  6] =         0.030131404700;     BAS[ATNO][ 14].d[  6] =         0.000092373345;
+  BAS[ATNO][ 14].a[  7] =         8.606630554300;     BAS[ATNO][ 14].d[  7] =         0.015335130828;
+  BAS[ATNO][ 14].a[  8] =         4.440097995800;     BAS[ATNO][ 14].d[  8] =        -0.080416481522;
+  BAS[ATNO][ 14].a[  9] =         1.128102694600;     BAS[ATNO][ 14].d[  9] =         0.186599249796;
+  BAS[ATNO][ 14].a[ 10] =         0.543460763100;     BAS[ATNO][ 14].d[ 10] =         0.217490601459;
+  BAS[ATNO][ 14].a[ 11] =         8.606630554300;     BAS[ATNO][ 14].d[ 11] =        -0.032311864310;
+  BAS[ATNO][ 14].a[ 12] =         4.440097995800;     BAS[ATNO][ 14].d[ 12] =         0.169441426252;
+  BAS[ATNO][ 14].a[ 13] =         1.128102694600;     BAS[ATNO][ 14].d[ 13] =        -0.393173668190;
+  BAS[ATNO][ 14].a[ 14] =         0.543460763100;     BAS[ATNO][ 14].d[ 14] =        -0.458263244175;
+  BAS[ATNO][ 14].a[ 15] =         8.606630554300;     BAS[ATNO][ 14].d[ 15] =         0.047731539343;
+  BAS[ATNO][ 14].a[ 16] =         4.440097995800;     BAS[ATNO][ 14].d[ 16] =        -0.250301252382;
+  BAS[ATNO][ 14].a[ 17] =         1.128102694600;     BAS[ATNO][ 14].d[ 17] =         0.580801659479;
+  BAS[ATNO][ 14].a[ 18] =         0.543460763100;     BAS[ATNO][ 14].d[ 18] =         0.676952894431;
+
+-------------------------------------------
+RADIAL EXPECTATION VALUES <R**-3> TO <R**3>
+-------------------------------------------
+   0 :     0.000000     0.891002     0.897202     1.230642     1.669696     2.493648
+   1 :     0.765290     0.743475     0.814504     1.371853     2.098514     3.572027
+   2 :     0.765289     0.743474     0.814504     1.371853     2.098516     3.572034
+   3 :     0.767394     0.745122     0.815502     1.370416     2.096641     3.583511
+   4 :     0.000000     0.163580     0.343537     3.362207    12.875425    54.133079
+   5 :     0.342313     0.407798     0.584542     2.030731     4.864655    68.157639
+   6 :     0.000000     0.055133     0.186573     6.482714    46.496553   354.440630
+   7 :     0.000000     0.478714     0.573234     2.660375    10.702243    60.426693
+   8 :     0.000000     4.100790     1.787455     0.727680     0.957231     3.154787
+   9 :     0.000000    41.190602     5.102421     0.277866     0.152342     0.337794
+  10 :     0.337801     0.403657     0.579983     2.066430     5.112728    70.389188
+  11 :     0.065772     0.107605     0.281613     4.212818    20.034884   106.251850
+  12 :     0.065779     0.107613     0.281625     4.212601    20.032585   106.231608
+  13 :     0.053236     0.091488     0.258377     4.635398    24.549881   146.475103
+  14 :     0.283038     0.350544     0.533854     2.308315     6.544044   112.547159
+  15 :     0.279346     0.346425     0.529541     2.342034     6.783561   119.802443
+  16 :     0.279345     0.346424     0.529539     2.342041     6.783610   119.803816
+  17 :     0.023748     0.045678     0.172455     7.130630    56.510789   477.615039
+  18 :     0.023754     0.045685     0.172465     7.130427    56.508607   477.595892
+  19 :     0.033414     0.058893     0.192914     6.720810    52.002465   436.587316
+  20 :     0.044996     0.076571     0.229303     5.157491    28.818944   848.933930
+  21 :     0.076812     0.109894     0.261588     4.948101    27.472744   811.946639
+  22 :     0.049345     0.080994     0.233514     5.127794    28.619893   837.816628
+  23 :     0.083796     0.117048     0.268558     4.896089    27.093576   799.948384
+  24 :     0.083797     0.117048     0.268558     4.896086    27.093564   799.947676
+  25 :     0.344754     0.356937     0.494470     2.947424    11.653684   284.674799
+  26 :     0.372224     0.380880     0.512884     2.879134    11.319757   277.270188
+  27 :     0.339660     0.352527     0.490674     2.972475    11.842593   290.943368
+  28 :     0.368931     0.377845     0.510228     2.897426    11.459413   282.013119
+  29 :     0.368932     0.377845     0.510228     2.897423    11.459392   282.012400
+  30 :     0.301294     0.317661     0.467504     3.135210    13.972880    83.542725
+  31 :     0.301296     0.317663     0.467505     3.135194    13.972744    83.541674
+  32 :     0.302126     0.318993     0.469368     3.123054    13.960977    84.297311
+Making the total density                ... o.k.
+o.k.
+Initializing the integrals              ... done
+Making exponents                        ... done
+Making rho(0)                           ... done (         0.000303392)
+Integral calculation                    ... Two index integrals                     ... done
+Solving the equation system             ... done
+atomic density will be written to file Zr2_atom40.adf
+
+-------
+TIMINGS
+-------
+
+Total SCF time: 0 days 0 hours 0 min 3 sec 
+
+Total time                  ....       3.656 sec
+Sum of individual times     ....       1.656 sec  ( 45.3%)
+
+Fock matrix formation       ....       1.470 sec  ( 40.2%)
+Diagonalization             ....       0.139 sec  (  3.8%)
+Density matrix formation    ....       0.003 sec  (  0.1%)
+Population analysis         ....       0.000 sec  (  0.0%)
+Initial guess               ....       0.001 sec  (  0.0%)
+Orbital Transformation      ....       0.000 sec  (  0.0%)
+Orbital Orthonormalization  ....       0.000 sec  (  0.0%)
+DIIS solution               ....       0.043 sec  (  1.2%)
+
+-------------------------   --------------------
+FINAL SINGLE POINT ENERGY       -46.053112394875
+-------------------------   --------------------
+
+
+                            ***************************************
+                            *     ORCA property calculations      *
+                            ***************************************
+
+                                    ---------------------
+                                    Active property flags
+                                    ---------------------
+   (+) Dipole Moment
+
+
+------------------------------------------------------------------------------
+                       ORCA ELECTRIC PROPERTIES CALCULATION
+------------------------------------------------------------------------------
+
+Dipole Moment Calculation                       ... on
+Quadrupole Moment Calculation                   ... off
+Polarizability Calculation                      ... off
+GBWName                                         ... Zr2_atom40.gbw
+Electron density file                           ... Zr2_atom40.scfp
+The origin for moment calculation is the CENTER OF MASS  = ( 0.000000,  0.000000  0.000000)
+
+-------------
+DIPOLE MOMENT
+-------------
+                                X             Y             Z
+Electronic contribution:     -0.00174       0.00296       0.00017
+Nuclear contribution   :      0.00000       0.00000       0.00000
+                        -----------------------------------------
+Total Dipole Moment    :     -0.00174       0.00296       0.00017
+                        -----------------------------------------
+Magnitude (a.u.)       :      0.00344
+Magnitude (Debye)      :      0.00873
+
+
+
+--------------------
+Rotational spectrum 
+--------------------
+ 
+Rotational constants in cm-1:     0.000000     0.000000     0.000000 
+Rotational constants in MHz :     0.000000     0.000000     0.000000 
+
+ Dipole components along the rotational axes: 
+x,y,z [a.u.] :    -0.001741     0.002956     0.000175 
+x,y,z [Debye]:    -0.004425     0.007514     0.000444 
+
+ 
+
+Timings for individual modules:
+
+Sum of individual times         ...        6.036 sec (=   0.101 min)
+GTO integral calculation        ...        1.527 sec (=   0.025 min)  25.3 %
+SCF iterations                  ...        4.509 sec (=   0.075 min)  74.7 %
+                             ****ORCA TERMINATED NORMALLY****
+TOTAL RUN TIME: 0 days 0 hours 0 minutes 29 seconds 452 msec

@@ -1,0 +1,14 @@
+#!/bin/bash -l
+#SBATCH -N 1
+#SBATCH --tasks-per-node=28
+#SBATCH --time=1:00:00
+#SBATCH --job-name="CuH2O+"
+#SBATCH --error="CuH2O+.e%j"
+#SBATCH --output="CuH2O+.o%j"
+#SBATCH --mem=120G
+
+
+source ${HOME}/.bashrc
+
+
+qcore -n 28 "CuH2O+.in" &> "CuH2O+.out"

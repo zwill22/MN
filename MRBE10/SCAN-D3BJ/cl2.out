@@ -1,0 +1,353 @@
+
+    -----------------------------------------------------------------------
+          Psi4: An Open-Source Ab Initio Electronic Structure Package
+                               Psi4 1.4.1 release
+
+                         Git: Rev {HEAD} cd00f19 
+
+
+    D. G. A. Smith, L. A. Burns, A. C. Simmonett, R. M. Parrish,
+    M. C. Schieber, R. Galvelis, P. Kraus, H. Kruse, R. Di Remigio,
+    A. Alenaizan, A. M. James, S. Lehtola, J. P. Misiewicz, M. Scheurer,
+    R. A. Shaw, J. B. Schriber, Y. Xie, Z. L. Glick, D. A. Sirianni,
+    J. S. O'Brien, J. M. Waldrop, A. Kumar, E. G. Hohenstein,
+    B. P. Pritchard, B. R. Brooks, H. F. Schaefer III, A. Yu. Sokolov,
+    K. Patkowski, A. E. DePrince III, U. Bozkaya, R. A. King,
+    F. A. Evangelista, J. M. Turney, T. D. Crawford, C. D. Sherrill,
+    J. Chem. Phys. 152(18) 184108 (2020). https://doi.org/10.1063/5.0006002
+
+                            Additional Code Authors
+    E. T. Seidl, C. L. Janssen, E. F. Valeev, M. L. Leininger,
+    J. F. Gonthier, R. M. Richard, H. R. McAlexander, M. Saitow, X. Wang,
+    P. Verma, and M. H. Lechner
+
+             Previous Authors, Complete List of Code Contributors,
+                       and Citations for Specific Modules
+    https://github.com/psi4/psi4/blob/master/codemeta.json
+    https://github.com/psi4/psi4/graphs/contributors
+    http://psicode.org/psi4manual/master/introduction.html#citing-psifour
+
+    -----------------------------------------------------------------------
+
+
+    Psi4 started on: Sunday, 07 November 2021 05:06AM
+
+    Process ID: 15730
+    Host:       compute387.bc4.acrc.priv
+    PSIDATADIR: /mnt/storage/home/zw18965/.conda/envs/p4env/share/psi4
+    Memory:     500.0 MiB
+    Threads:    28
+    
+  ==> Input File <==
+
+--------------------------------------------------------------------------
+memory 120 GB
+
+molecule {
+0 1
+Cl         0.00000        0.00000        1.02117
+Cl         0.00000        0.00000       -1.02117
+ }
+
+set dynamic_level 1
+set basis Def2-TZVPPD
+
+energy("SCAN-D3BJ")
+--------------------------------------------------------------------------
+
+  Memory set to 111.759 GiB by Python driver.
+
+Scratch directory: /tmp/
+
+*** tstart() called on compute387.bc4.acrc.priv
+*** at Sun Nov  7 05:06:22 2021
+
+   => Loading Basis Set <=
+
+    Name: DEF2-TZVPPD
+    Role: ORBITAL
+    Keyword: BASIS
+    atoms 1-2 entry CL         line   607 file /mnt/storage/home/zw18965/.conda/envs/p4env/share/psi4/basis/def2-tzvppd.gbs 
+
+   => SCAN-D3(BJ): Empirical Dispersion <=
+
+    Grimme's -D3 (BJ-damping) Dispersion Correction
+    Grimme S.; Ehrlich S.; Goerigk L. (2011), J. Comput. Chem., 32: 1456
+    Parametrisation from:    J.G. Brandenburg, J. E. Bates, J. Sun, J.P. Perdew, Phys. Rev. B 94, 115144, 2016
+
+        s6 =       1.000000
+        s8 =       0.000000
+        a1 =       0.538000
+        a2 =       5.420000
+
+
+         ---------------------------------------------------------
+                                   SCF
+               by Justin Turney, Rob Parrish, Andy Simmonett
+                          and Daniel G. A. Smith
+                              RKS Reference
+                       28 Threads, 114440 MiB Core
+         ---------------------------------------------------------
+
+  ==> Geometry <==
+
+    Molecular point group: d2h
+    Full point group: D_inf_h
+
+    Geometry (in Angstrom), charge = 0, multiplicity = 1:
+
+       Center              X                  Y                   Z               Mass       
+    ------------   -----------------  -----------------  -----------------  -----------------
+         CL           0.000000000000     0.000000000000     1.021170000000    34.968852682000
+         CL           0.000000000000     0.000000000000    -1.021170000000    34.968852682000
+
+  Running in d2h symmetry.
+
+  Rotational constants: A = ************  B =      0.23115  C =      0.23115 [cm^-1]
+  Rotational constants: A = ************  B =   6929.62487  C =   6929.62487 [MHz]
+  Nuclear repulsion =   74.880878738912273
+
+  Charge       = 0
+  Multiplicity = 1
+  Electrons    = 34
+  Nalpha       = 17
+  Nbeta        = 17
+
+  ==> Algorithm <==
+
+  SCF Algorithm Type is DF.
+  DIIS enabled.
+  MOM disabled.
+  Fractional occupation disabled.
+  Guess Type is SAD.
+  Energy threshold   = 1.00e-06
+  Density threshold  = 1.00e-06
+  Integral threshold = 1.00e-12
+
+  ==> Primary Basis <==
+
+  Basis Set: DEF2-TZVPPD
+    Blend: DEF2-TZVPPD
+    Number of shells: 34
+    Number of basis functions: 102
+    Number of Cartesian functions: 116
+    Spherical Harmonics?: true
+    Max angular momentum: 3
+
+  ==> DFT Potential <==
+
+   => Composite Functional: SCAN-D3BJ <= 
+
+    SCAN Meta-GGA XC Functional
+(10.1103/PhysRevLett.115.036402)
+    J. Sun, A. Ruzsinszky, J. P. Perdew  Phys. Rev. Lett. 115, 036402, 2015
+
+
+    Deriv               =              1
+    GGA                 =           TRUE
+    Meta                =           TRUE
+
+    Exchange Hybrid     =          FALSE
+    MP2 Hybrid          =          FALSE
+
+   => Exchange Functionals <=
+
+    1.0000   XC_MGGA_X_SCAN
+
+   => Correlation Functionals <=
+
+    1.0000   XC_MGGA_C_SCAN
+
+   => LibXC Density Thresholds  <==
+
+    XC_MGGA_C_SCAN:  1.00E-15 
+    XC_MGGA_X_SCAN:  1.00E-15 
+
+   => Molecular Quadrature <=
+
+    Radial Scheme          =       TREUTLER
+    Pruning Scheme         =           NONE
+    Nuclear Scheme         =       TREUTLER
+
+    BS radius alpha        =              1
+    Pruning alpha          =              1
+    Radial Points          =             75
+    Spherical Points       =            302
+    Total Points           =          44038
+    Total Blocks           =            422
+    Max Points             =            256
+    Max Functions          =            100
+    Weights Tolerance      =       1.00E-15
+
+   => Loading Basis Set <=
+
+    Name: (DEF2-TZVPPD AUX)
+    Role: JKFIT
+    Keyword: DF_BASIS_SCF
+    atoms 1-2 entry CL         line   986 file /mnt/storage/home/zw18965/.conda/envs/p4env/share/psi4/basis/def2-universal-jkfit.gbs 
+
+  ==> Integral Setup <==
+
+  DFHelper Memory: AOs need 0.024 GiB; user supplied 83.566 GiB. Using in-core AOs.
+
+  ==> MemDFJK: Density-Fitted J/K Matrices <==
+
+    J tasked:                   Yes
+    K tasked:                    No
+    wK tasked:                   No
+    OpenMP threads:              28
+    Memory [MiB]:             85571
+    Algorithm:                 Core
+    Schwarz Cutoff:           1E-12
+    Mask sparsity (%):       2.4414
+    Fitting Condition:        1E-10
+
+   => Auxiliary Basis Set <=
+
+  Basis Set: (DEF2-TZVPPD AUX)
+    Blend: DEF2-UNIVERSAL-JKFIT
+    Number of shells: 76
+    Number of basis functions: 256
+    Number of Cartesian functions: 310
+    Spherical Harmonics?: true
+    Max angular momentum: 4
+
+  Cached 100.0% of DFT collocation blocks in 0.253 [GiB].
+
+  Minimum eigenvalue in the overlap matrix is 3.7925076998E-03.
+  Reciprocal condition number of the overlap matrix is 8.8801590429E-04.
+    Using symmetric orthogonalization.
+
+  ==> Pre-Iterations <==
+
+  SCF Guess: Superposition of Atomic Densities via on-the-fly atomic UHF (no occupation information).
+
+   -------------------------
+    Irrep   Nso     Nmo    
+   -------------------------
+     Ag        22      22 
+     B1g        5       5 
+     B2g       12      12 
+     B3g       12      12 
+     Au         5       5 
+     B1u       22      22 
+     B2u       12      12 
+     B3u       12      12 
+   -------------------------
+    Total     102     102
+   -------------------------
+
+  ==> Iterations <==
+
+                           Total Energy        Delta E     RMS |[F,P]|
+
+   @DF-RKS iter SAD:  -920.38601356864444   -9.20386e+02   0.00000e+00 
+   @DF-RKS iter   1:  -920.46275266664077   -7.67391e-02   8.05184e-03 DIIS
+   @DF-RKS iter   2:  -920.47310403196104   -1.03514e-02   4.53434e-03 DIIS
+   @DF-RKS iter   3:  -920.47977160750452   -6.66758e-03   7.01459e-04 DIIS
+   @DF-RKS iter   4:  -920.48008776762833   -3.16160e-04   1.87781e-04 DIIS
+   @DF-RKS iter   5:  -920.48010897218239   -2.12046e-05   8.95116e-06 DIIS
+   @DF-RKS iter   6:  -920.48010902434373   -5.21613e-08   1.57664e-06 DIIS
+   @DF-RKS iter   7:  -920.48010902620911   -1.86537e-09   8.11728e-08 DIIS
+  Energy and wave function converged.
+
+
+  ==> Post-Iterations <==
+
+   Electrons on quadrature grid:
+      Ntotal   =   34.0000003351 ; deviation = 3.351e-07 
+
+    Orbital Energies [Eh]
+    ---------------------
+
+    Doubly Occupied:                                                      
+
+       1B1u -101.306092     1Ag  -101.306084     2Ag    -9.440536  
+       2B1u   -9.440532     3Ag    -7.185327     3B1u   -7.185226  
+       1B3u   -7.168288     1B2u   -7.168288     1B2g   -7.168284  
+       1B3g   -7.168284     4Ag    -0.887916     4B1u   -0.739085  
+       5Ag    -0.453439     2B2u   -0.377427     2B3u   -0.377427  
+       2B3g   -0.285051     2B2g   -0.285051  
+
+    Virtual:                                                              
+
+       5B1u   -0.169941     6B1u    0.047265     6Ag     0.051047  
+       3B2u    0.065817     3B3u    0.065817     7Ag     0.072267  
+       3B3g    0.096559     3B2g    0.096559     1B1g    0.138597  
+       8Ag     0.138625     4B3u    0.159228     4B2u    0.159228  
+       7B1u    0.205167     9Ag     0.242680     1Au     0.244903  
+       8B1u    0.244918     9B1u    0.276889     4B3g    0.310959  
+       4B2g    0.310959     5B2u    0.451726     5B3u    0.451726  
+      10Ag     0.489873     6B2u    0.499451     6B3u    0.499451  
+       2B1g    0.536140    11Ag     0.536427     2Au     0.589761  
+      10B1u    0.589998    12Ag     0.602757     5B3g    0.606095  
+       5B2g    0.606095     6B2g    0.647542     6B3g    0.647542  
+      11B1u    0.681720    12B1u    0.738241    13Ag     0.844893  
+      13B1u    1.282583     7B3u    1.773058     7B2u    1.773058  
+       3B1g    1.812298    14Ag     1.812357    15Ag     1.887013  
+       3Au     1.916844    14B1u    1.916932     7B3g    1.924054  
+       7B2g    1.924054    15B1u    1.938744     8B3u    1.949303  
+       8B2u    1.949303    16Ag     1.966050     4B1g    1.966287  
+       9B2u    2.054555     9B3u    2.054555     8B3g    2.089293  
+       8B2g    2.089293     4Au     2.210935    16B1u    2.211413  
+      17Ag     2.277001    10B2u    2.293707    10B3u    2.293707  
+      18Ag     2.364164     9B3g    2.377098     9B2g    2.377098  
+      17B1u    2.436791    10B2g    2.733911    10B3g    2.733911  
+      18B1u    3.792557     5B1g    8.081674    19Ag     8.081837  
+      11B3u    8.103811    11B2u    8.103811     5Au     8.119415  
+      19B1u    8.119536    20B1u    8.142265    11B2g    8.145422  
+      11B3g    8.145422    20Ag     8.267074    12B3u   10.733533  
+      12B2u   10.733533    12B2g   10.853539    12B3g   10.853539  
+      21Ag    10.875904    21B1u   11.291135    22Ag    24.694844  
+      22B1u   25.355481  
+
+    Final Occupation by Irrep:
+             Ag   B1g   B2g   B3g    Au   B1u   B2u   B3u 
+    DOCC [     5,    0,    2,    2,    0,    4,    2,    2 ]
+
+  @DF-RKS Final Energy:  -920.48010902620911
+
+   => Energetics <=
+
+    Nuclear Repulsion Energy =             74.8808787389122728
+    One-Electron Energy =               -1419.2573680111190697
+    Two-Electron Energy =                 480.4421878082379749
+    DFT Exchange-Correlation Energy =     -56.5456262022402711
+    Empirical Dispersion Energy =          -0.0001813600000000
+    VV10 Nonlocal Energy =                  0.0000000000000000
+    Total Energy =                       -920.4801090262091066
+
+Computation Completed
+
+
+Properties will be evaluated at   0.000000,   0.000000,   0.000000 [a0]
+
+Properties computed using the SCF density matrix
+
+  Nuclear Dipole Moment: [e a0]
+     X:     0.0000      Y:     0.0000      Z:     0.0000
+
+  Electronic Dipole Moment: [e a0]
+     X:     0.0000      Y:     0.0000      Z:     0.0000
+
+  Dipole Moment: [e a0]
+     X:     0.0000      Y:     0.0000      Z:     0.0000     Total:     0.0000
+
+  Dipole Moment: [D]
+     X:     0.0000      Y:     0.0000      Z:     0.0000     Total:     0.0000
+
+
+*** tstop() called on compute387.bc4.acrc.priv at Sun Nov  7 05:06:24 2021
+Module time:
+	user time   =      19.97 seconds =       0.33 minutes
+	system time =       1.32 seconds =       0.02 minutes
+	total time  =          2 seconds =       0.03 minutes
+Total time:
+	user time   =      19.97 seconds =       0.33 minutes
+	system time =       1.32 seconds =       0.02 minutes
+	total time  =          2 seconds =       0.03 minutes
+
+    Psi4 stopped on: Sunday, 07 November 2021 05:06AM
+    Psi4 wall time for execution: 0:00:02.29
+
+*** Psi4 exiting successfully. Buy a developer a beer!
