@@ -1,0 +1,19 @@
+#!/bin/bash -l
+#SBATCH -N 1
+#SBATCH --tasks-per-node=28
+#SBATCH --time=1:00:00
+#SBATCH --job-name="wB97X-V"
+#SBATCH --error="wB97X-V.e%j"
+#SBATCH --output="wB97X-V.o%j"
+#SBATCH --mem=112G
+
+
+source ${HOME}/.bashrc
+
+cd /mnt/storage/scratch/zw18965/MN/MRBE10/wB97X-V
+
+for file in *.in; do
+  if [[ ! -f ${file%.in}.out ]]; then
+	$((which orca)) "${file%.in}.in" &> "${file%.in}.out"
+  fi
+done
