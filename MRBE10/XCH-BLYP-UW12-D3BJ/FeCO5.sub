@@ -1,14 +1,13 @@
 #!/bin/bash -l
-#SBATCH -N 1
-#SBATCH --tasks-per-node=28
-#SBATCH --time=1:00:00
-#SBATCH --job-name="FeCO5"
-#SBATCH --error="FeCO5.e%j"
-#SBATCH --output="FeCO5.o%j"
-#SBATCH --mem=120G
+#PBS -N "FeCO5"
+#PBS -j oe
+#PBS -l walltime=6:00:00
+#PBS -l select=1:ncpus=16:mem=64gb:mpiprocs=16
 
 
 source ${HOME}/.bashrc
 
+cd /newhome/zw18965/MN/MRBE10/XCH-BLYP-UW12-D3BJ
 
-qcore -n 28 "FeCO5.in" &> "FeCO5.out"
+
+qcore -n 16 "FeCO5.in" &> "FeCO5.out"
